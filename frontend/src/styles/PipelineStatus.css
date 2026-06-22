@@ -1,0 +1,76 @@
+.pipeline-container {
+  width: 100%;
+  margin-top: 70px;
+}
+
+.pipeline-title {
+  text-align: center;
+  color: white;
+  margin-bottom: 35px;
+  font-size: 2rem;
+}
+
+.pipeline-grid {
+  max-width: 1200px;
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  gap: 20px;
+}
+
+.pipeline-card {
+  background: rgba(255,255,255,0.05);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  border-radius: 20px;
+
+  padding: 25px;
+
+  text-align: center;
+
+  transition: all 0.3s ease;
+}
+
+.pipeline-card:hover {
+  transform: translateY(-6px);
+
+  border-color: #7c3aed;
+
+  box-shadow: 0 0 20px rgba(124,58,237,0.25);
+}
+
+.pipeline-number {
+  width: 55px;
+  height: 55px;
+
+  margin: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 50%;
+
+  background: linear-gradient(
+    135deg,
+    #7c3aed,
+    #22d3ee
+  );
+
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.pipeline-card h3 {
+  margin-top: 18px;
+  color: white;
+}
+
+.pipeline-card p {
+  margin-top: 10px;
+  color: #94a3b8;
+}

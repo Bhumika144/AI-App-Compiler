@@ -1,0 +1,656 @@
+/* ========================================
+   ROOT VARIABLES
+   ======================================== */
+:root {
+  /* Colors */
+  --bg-panel: rgba(255, 255, 255, 0.03);
+  --bg-panel-hover: rgba(255, 255, 255, 0.06);
+  --border-panel: rgba(255, 255, 255, 0.06);
+  --bg-code: #0b1120;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  
+  /* Accent Colors */
+  --accent-purple: #7c3aed;
+  --accent-purple-light: #a855f7;
+  --accent-cyan: #22d3ee;
+  --accent-indigo: #4f46e5;
+  
+  /* Status Colors */
+  --status-empty: #64748b;
+  --status-array: #22d3ee;
+  --status-object: #a855f7;
+  --status-primitive: #34d399;
+  
+  /* JSON Syntax Colors */
+  --json-key: #7c3aed;
+  --json-string: #22d3ee;
+  --json-number: #fbbf24;
+  --json-boolean: #34d399;
+  --json-null: #f87171;
+  
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================
+   OUTPUT CONTAINER
+   ======================================== */
+.output-container {
+  background: var(--bg-panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-panel);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.output-container:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   TABS
+   ======================================== */
+.tabs-wrapper {
+  padding: var(--space-md) var(--space-md) 0;
+  border-bottom: 1px solid var(--border-panel);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.tabs-wrapper::-webkit-scrollbar {
+  height: 3px;
+}
+
+.tabs-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tabs-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+}
+
+.tabs-scroll {
+  display: flex;
+  gap: var(--space-xs);
+  padding: var(--space-xs) 0;
+  min-width: max-content;
+}
+
+/* Tab Button */
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  white-space: nowrap;
+  font-family: "Inter", sans-serif;
+}
+
+.tab-btn:hover {
+  background: var(--bg-panel-hover);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: rgba(124, 58, 237, 0.12);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.tab-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.tab-label {
+  font-size: 0.85rem;
+}
+
+.tab-active-indicator {
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+  border-radius: var(--radius-full);
+  animation: slideIndicator 0.3s ease;
+}
+
+@keyframes slideIndicator {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 20px;
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   OUTPUT HEADER
+   ======================================== */
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg) var(--space-xl);
+  border-bottom: 1px solid var(--border-panel);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.output-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.output-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px var(--space-md);
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-empty {
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--status-empty);
+}
+
+.status-array {
+  background: rgba(34, 211, 238, 0.1);
+  color: var(--status-array);
+}
+
+.status-object {
+  background: rgba(168, 85, 247, 0.1);
+  color: var(--status-object);
+}
+
+.status-primitive {
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--status-primitive);
+}
+
+.output-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* Copy Button */
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px var(--space-lg);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-panel);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: "Inter", sans-serif;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.copy-btn.copied {
+  background: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.2);
+  color: var(--status-primitive);
+}
+
+.copy-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* ========================================
+   JSON VIEWER
+   ======================================== */
+.json-viewer {
+  background: var(--bg-code);
+  padding: var(--space-xl);
+  min-height: 350px;
+  max-height: 600px;
+  overflow: auto;
+  position: relative;
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.json-viewer.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.json-content {
+  display: flex;
+  gap: var(--space-xl);
+  height: 100%;
+}
+
+/* Line Numbers */
+.json-line-numbers {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: var(--space-lg);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  min-width: 40px;
+  user-select: none;
+  opacity: 0.3;
+}
+
+.line-number {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  font-feature-settings: "tnum";
+  line-height: 1.8;
+}
+
+.json-code {
+  flex: 1;
+  overflow-x: auto;
+}
+
+.json-line {
+  min-height: 1.8em;
+  white-space: pre;
+  word-break: break-all;
+}
+
+/* JSON Syntax Highlighting */
+.json-key {
+  color: var(--json-key);
+  font-weight: 600;
+}
+
+.json-string {
+  color: var(--json-string);
+}
+
+.json-number {
+  color: var(--json-number);
+}
+
+.json-boolean {
+  color: var(--json-boolean);
+  font-weight: 600;
+}
+
+.json-null {
+  color: var(--json-null);
+  font-weight: 600;
+}
+
+/* ========================================
+   EMPTY STATE
+   ======================================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-3xl);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.empty-state-icon {
+  font-size: 3.5rem;
+  margin-bottom: var(--space-lg);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.empty-state-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-xl);
+}
+
+.empty-state-description strong {
+  color: var(--accent-purple-light);
+  font-weight: 600;
+}
+
+.empty-state-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-panel);
+  border-radius: var(--radius-full);
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+
+.hint-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent-cyan);
+  border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+}
+
+/* ========================================
+   OUTPUT FOOTER
+   ======================================== */
+.output-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-xl);
+  border-top: 1px solid var(--border-panel);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.footer-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.footer-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--status-primitive);
+  border-radius: 50%;
+}
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+.json-viewer::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.json-viewer::-webkit-scrollbar-track {
+  background: var(--bg-code);
+}
+
+.json-viewer::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+}
+
+.json-viewer::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .json-viewer {
+    max-height: 450px;
+    font-size: 0.8rem;
+  }
+  
+  .tab-btn {
+    padding: var(--space-sm) var(--space-lg);
+    font-size: 0.8rem;
+  }
+  
+  .tab-label {
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .output-container {
+    border-radius: var(--radius-lg);
+  }
+  
+  .tabs-wrapper {
+    padding: var(--space-sm) var(--space-sm) 0;
+  }
+  
+  .tab-btn {
+    padding: 6px var(--space-md);
+    font-size: 0.75rem;
+  }
+  
+  .tab-label {
+    font-size: 0.75rem;
+  }
+  
+  .tab-icon {
+    font-size: 0.85rem;
+  }
+  
+  .output-header {
+    padding: var(--space-md);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .output-header-left {
+    width: 100%;
+  }
+  
+  .output-title {
+    font-size: 0.9rem;
+  }
+  
+  .output-header-right {
+    width: 100%;
+  }
+  
+  .copy-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .json-viewer {
+    padding: var(--space-md);
+    min-height: 250px;
+    max-height: 350px;
+    font-size: 0.75rem;
+  }
+  
+  .json-line-numbers {
+    display: none;
+  }
+  
+  .output-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-sm) var(--space-md);
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .tab-btn {
+    padding: 4px var(--space-sm);
+    font-size: 0.7rem;
+  }
+  
+  .tab-label {
+    font-size: 0.7rem;
+  }
+  
+  .tab-icon {
+    font-size: 0.75rem;
+  }
+  
+  .json-viewer {
+    padding: var(--space-sm);
+    min-height: 200px;
+    max-height: 300px;
+    font-size: 0.7rem;
+  }
+  
+  .empty-state {
+    padding: var(--space-xl);
+  }
+  
+  .empty-state-icon {
+    font-size: 2.5rem;
+  }
+  
+  .empty-state-title {
+    font-size: 1rem;
+  }
+  
+  .empty-state-description {
+    font-size: 0.8rem;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY & FOCUS STATES
+   ======================================== */
+.tab-btn:focus-visible,
+.copy-btn:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ========================================
+   REDUCED MOTION
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  .tab-active-indicator,
+  .empty-state-icon,
+  .hint-dot {
+    animation: none !important;
+  }
+  
+  .tab-btn,
+  .copy-btn,
+  .output-container {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+  .output-container {
+    border: 1px solid #ddd;
+    background: white;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  
+  .json-viewer {
+    background: white;
+    color: black;
+  }
+  
+  .tab-btn {
+    color: black;
+  }
+  
+  .tab-btn.active {
+    background: #f0f0f0;
+  }
+  
+  .copy-btn {
+    display: none;
+  }
+}
