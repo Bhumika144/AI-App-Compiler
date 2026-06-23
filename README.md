@@ -1,7 +1,10 @@
 # 🚀 AI App Compiler
 
 ## 📌 Overview
-AI App Compiler is a multi-stage AI system that transforms natural language prompts into structured software specifications. The application analyzes user requirements and automatically generates system design, schemas, validation reports, and runtime simulations, simplifying the software planning process.
+AI App Compiler is a multi-stage AI system that transforms natural language prompts into structured software specifications. The application analyzes user requirements and automatically generates system designs, schemas, validation reports, and runtime simulations.
+
+## 🎯 Objective
+To automate the software design process by converting natural language requirements into structured application specifications, reducing manual effort and demonstrating AI-driven software engineering workflows.
 
 ## ✨ Key Features
 🤖 Intent Extraction from user prompts  
@@ -30,6 +33,3 @@ AI App Compiler is a multi-stage AI system that transforms natural language prom
 ### Deployment
 - Vercel
 - Render
-
-## 🎯 Objective
-To automate the software design process by converting natural language requirements into structured application specifications, reducing manual effort and demonstrating AI-driven software engineering workflows.
