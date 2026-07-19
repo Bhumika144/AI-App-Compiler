@@ -4,6 +4,7 @@ export const PipelineContext = createContext();
 
 export const PipelineProvider = ({ children }) => {
 
+  // Stage Outputs
   const [intentData, setIntentData] = useState(null);
 
   const [systemDesign, setSystemDesign] = useState(null);
@@ -16,9 +17,15 @@ export const PipelineProvider = ({ children }) => {
 
   const [runtimeData, setRuntimeData] = useState(null);
 
+  // Pipeline Status
+  const [currentStage, setCurrentStage] = useState("");
+
+  const [isGenerating, setIsGenerating] = useState(false);
+
   return (
     <PipelineContext.Provider
       value={{
+        // Stage Data
         intentData,
         setIntentData,
 
@@ -36,6 +43,13 @@ export const PipelineProvider = ({ children }) => {
 
         runtimeData,
         setRuntimeData,
+
+        // Pipeline Animation
+        currentStage,
+        setCurrentStage,
+
+        isGenerating,
+        setIsGenerating,
       }}
     >
       {children}

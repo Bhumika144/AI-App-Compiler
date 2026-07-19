@@ -17,6 +17,8 @@ function PromptInput() {
     setValidationData,
     setRepairData,
     setRuntimeData,
+    setCurrentStage,
+    setIsGenerating,
   } = useContext(PipelineContext);
 
   const examples = [
@@ -56,59 +58,62 @@ function PromptInput() {
 
     try {
       setLoading(true);
-      setPrompt("");
+      setIsGenerating(true); // Set generating state to true
 
       // Stage 1: Intent Extraction
+      setCurrentStage("Intent Extraction");
       const response = await API.post("/generate-intent", {
         prompt: prompt,
       });
-
       setIntentData(response.data);
 
       // Stage 2: System Design
+      setCurrentStage("System Design");
       const designResponse = await API.post("/generate-system-design", {
         intentData: response.data,
       });
-
       setSystemDesign(designResponse.data);
 
       // Stage 3: Schema Generation
+      setCurrentStage("Schema Generation");
       const schemaResponse = await API.post("/generate-schema", {
         systemDesign: designResponse.data,
       });
-
       setSchemaData(schemaResponse.data);
-
       console.log("Schema:", schemaResponse.data);
 
       // Stage 4: Validation
+      setCurrentStage("Validation");
       const validationResponse = await API.post("/validate-schema", {
         schemaData: schemaResponse.data,
       });
-
       setValidationData(validationResponse.data);
-
       console.log("Validation:", validationResponse.data);
 
       // Stage 5: Repair
+      setCurrentStage("Repair Engine");
       const repairResponse = await API.post("/repair-schema", {
         schemaData: schemaResponse.data,
       });
-
       setRepairData(repairResponse.data);
-
       console.log("Repair:", repairResponse.data);
 
       // Stage 6: Runtime Simulation
+      setCurrentStage("Runtime Simulation");
       const runtimeResponse = await API.post("/simulate-runtime", {
         schemaData: schemaResponse.data,
       });
-
       setRuntimeData(runtimeResponse.data);
-
       console.log("Runtime:", runtimeResponse.data);
+
       console.log("Intent Data:", response.data);
       console.log("System Design:", designResponse.data);
+
+      // All stages complete
+      setCurrentStage("Completed");
+
+      // Clear the prompt after successful generation
+      setPrompt("");
 
       showToast("✨ Blueprint generated successfully!", "success");
     } catch (error) {
@@ -117,8 +122,11 @@ function PromptInput() {
         error.response?.data?.message || "Something went wrong. Please try again.",
         "error"
       );
+      // Reset stage on error
+      setCurrentStage("");
     } finally {
       setLoading(false);
+      setIsGenerating(false); // Reset generating state
     }
   };
 

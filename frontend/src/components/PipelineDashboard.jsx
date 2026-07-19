@@ -4,6 +4,8 @@ import "../styles/PipelineDashboard.css";
 
 function PipelineDashboard() {
   const {
+    currentStage,
+    isGenerating,
     intentData,
     systemDesign,
     schemaData,
@@ -15,56 +17,87 @@ function PipelineDashboard() {
   const [animatedProgress, setAnimatedProgress] = useState(0);
 
   // Stage configuration with icons and descriptions
-  const stages = [
-    {
-      id: "intent",
-      name: "Intent Extraction",
-      icon: "🎯",
-      description: "Parsing natural language intent",
-      completed: !!intentData,
-      color: "#7c3aed",
-    },
-    {
-      id: "system",
-      name: "System Design",
-      icon: "🏗️",
-      description: "Architecting system components",
-      completed: !!systemDesign,
-      color: "#a855f7",
-    },
-    {
-      id: "schema",
-      name: "Schema Generation",
-      icon: "📊",
-      description: "Building data schemas",
-      completed: !!schemaData,
-      color: "#22d3ee",
-    },
-    {
-      id: "validation",
-      name: "Validation",
-      icon: "✅",
-      description: "Validating generated artifacts",
-      completed: !!validationData,
-      color: "#34d399",
-    },
-    {
-      id: "repair",
-      name: "Repair",
-      icon: "🔧",
-      description: "Fixing validation issues",
-      completed: !!repairData,
-      color: "#fbbf24",
-    },
-    {
-      id: "runtime",
-      name: "Runtime",
-      icon: "⚡",
-      description: "Runtime environment setup",
-      completed: !!runtimeData,
-      color: "#f87171",
-    },
+  const stageNames = [
+    "Intent Extraction",
+    "System Design",
+    "Schema Generation",
+    "Validation",
+    "Repair Engine",
+    "Runtime Simulation",
   ];
+
+  const stages = stageNames.map((name) => {
+    // Determine if stage is completed based on data
+    let completed = false;
+    switch (name) {
+      case "Intent Extraction":
+        completed = !!intentData;
+        break;
+      case "System Design":
+        completed = !!systemDesign;
+        break;
+      case "Schema Generation":
+        completed = !!schemaData;
+        break;
+      case "Validation":
+        completed = !!validationData;
+        break;
+      case "Repair Engine":
+        completed = !!repairData;
+        break;
+      case "Runtime Simulation":
+        completed = !!runtimeData;
+        break;
+      default:
+        completed = false;
+    }
+
+    return {
+      id: name.toLowerCase().replace(/\s+/g, "-"),
+      name: name,
+      icon: getStageIcon(name),
+      description: getStageDescription(name),
+      completed: completed,
+      color: getStageColor(name),
+    };
+  });
+
+  // Helper functions for stage metadata
+  function getStageIcon(name) {
+    const icons = {
+      "Intent Extraction": "🎯",
+      "System Design": "🏗️",
+      "Schema Generation": "📊",
+      "Validation": "✅",
+      "Repair Engine": "🔧",
+      "Runtime Simulation": "⚡",
+    };
+    return icons[name] || "📌";
+  }
+
+  function getStageDescription(name) {
+    const descriptions = {
+      "Intent Extraction": "Parsing natural language intent",
+      "System Design": "Architecting system components",
+      "Schema Generation": "Building data schemas",
+      "Validation": "Validating generated artifacts",
+      "Repair Engine": "Fixing validation issues",
+      "Runtime Simulation": "Runtime environment setup",
+    };
+    return descriptions[name] || "";
+  }
+
+  function getStageColor(name) {
+    const colors = {
+      "Intent Extraction": "#7c3aed",
+      "System Design": "#a855f7",
+      "Schema Generation": "#22d3ee",
+      "Validation": "#34d399",
+      "Repair Engine": "#fbbf24",
+      "Runtime Simulation": "#f87171",
+    };
+    return colors[name] || "#64748b";
+  }
 
   const completedStages = stages.filter((stage) => stage.completed).length;
   const totalStages = stages.length;
@@ -78,29 +111,26 @@ function PipelineDashboard() {
     return () => clearTimeout(timer);
   }, [progressPercentage]);
 
-  // Find current active stage (first incomplete or last completed)
-  const getActiveStageIndex = () => {
-    const index = stages.findIndex((stage) => !stage.completed);
-    return index === -1 ? stages.length - 1 : index - 1;
-  };
-
-  const activeIndex = getActiveStageIndex();
-
   // Get overall status
   const getOverallStatus = () => {
+    if (isGenerating) return "In Progress";
     if (completedStages === 0) return "Not Started";
     if (completedStages === totalStages) return "Complete";
-    return "In Progress";
+    return "Partial";
   };
 
   const overallStatus = getOverallStatus();
 
   // Get status color
   const getStatusColor = () => {
+    if (isGenerating) return "status-in-progress";
     if (completedStages === 0) return "status-not-started";
     if (completedStages === totalStages) return "status-complete";
-    return "status-in-progress";
+    return "status-partial";
   };
+
+  // Get current stage index for progress markers
+  const currentStageIndex = stageNames.indexOf(currentStage);
 
   return (
     <div className="dashboard-container" role="region" aria-label="Pipeline Dashboard">
@@ -116,7 +146,7 @@ function PipelineDashboard() {
         <div className="header-right">
           <span className={`status-badge ${getStatusColor()}`}>
             <span className="status-dot"></span>
-            {overallStatus}
+            {isGenerating ? `Running: ${currentStage}` : overallStatus}
           </span>
           <span className="stage-counter">
             {completedStages}/{totalStages} Complete
@@ -152,7 +182,9 @@ function PipelineDashboard() {
             {stages.map((stage, index) => (
               <div
                 key={index}
-                className={`progress-marker ${stage.completed ? "completed" : ""}`}
+                className={`progress-marker ${stage.completed ? "completed" : ""} ${
+                  stage.name === currentStage && isGenerating ? "active" : ""
+                }`}
                 style={{ left: `${(index / (stages.length - 1)) * 100}%` }}
                 aria-label={`Stage ${index + 1}: ${stage.name}`}
               >
@@ -166,71 +198,85 @@ function PipelineDashboard() {
 
       {/* Pipeline Grid */}
       <div className="pipeline-grid" role="list">
-        {stages.map((stage, index) => (
-          <div
-            key={stage.id}
-            className={`pipeline-card ${stage.completed ? "completed" : ""} ${
-              index === activeIndex && !stage.completed ? "active" : ""
-            }`}
-            role="listitem"
-            style={{ "--card-accent": stage.color }}
-          >
-            {/* Card Header */}
-            <div className="card-header">
-              <span className="card-step">Step {index + 1}</span>
-              <span className="card-status-icon">
-                {stage.completed ? (
-                  <span className="checkmark">✓</span>
-                ) : index === activeIndex && !stage.completed ? (
-                  <span className="spinner"></span>
-                ) : (
-                  <span className="pending-dot"></span>
-                )}
-              </span>
-            </div>
+        {stages.map((stage, index) => {
+          const isRunning = stage.name === currentStage && isGenerating;
+          const isCompleted = stage.completed;
 
-            {/* Card Content */}
-            <div className="card-content">
-              <div className="card-icon" style={{ background: `${stage.color}20` }}>
-                <span>{stage.icon}</span>
+          return (
+            <div
+              key={stage.id}
+              className={`pipeline-status-card 
+                ${isCompleted ? "completed" : ""} 
+                ${isRunning ? "running" : ""}`}
+              role="listitem"
+              style={{ "--card-accent": stage.color }}
+            >
+              {/* Card Header */}
+              <div className="card-header">
+                <span className="card-step">Step {index + 1}</span>
+                <span className="card-status-icon">
+                  {isCompleted ? (
+                    <span className="checkmark">✓</span>
+                  ) : isRunning ? (
+                    <span className="spinner"></span>
+                  ) : (
+                    <span className="pending-dot"></span>
+                  )}
+                </span>
               </div>
-              <h3 className="card-title">{stage.name}</h3>
-              <p className="card-description">{stage.description}</p>
-            </div>
 
-            {/* Card Footer */}
-            <div className="card-footer">
-              <span className={`card-status ${stage.completed ? "status-done" : "status-waiting"}`}>
-                {stage.completed ? (
-                  <>
-                    <span className="status-check">✅</span>
-                    Completed
-                  </>
-                ) : index === activeIndex && !stage.completed ? (
-                  <>
-                    <span className="status-loading">⏳</span>
-                    In Progress
-                  </>
-                ) : (
-                  <>
-                    <span className="status-pending">⏸️</span>
-                    Waiting
-                  </>
+              {/* Card Content */}
+              <div className="card-content">
+                <div className="card-icon" style={{ background: `${stage.color}20` }}>
+                  <span>{stage.icon}</span>
+                </div>
+                <h3 className="card-title">{stage.name}</h3>
+                <p className="card-description">{stage.description}</p>
+              </div>
+
+              {/* Card Footer */}
+              <div className="card-footer">
+                <span className={`card-status 
+                  ${isCompleted ? "status-done" : ""} 
+                  ${isRunning ? "status-running" : ""}`}
+                >
+                  {isCompleted ? (
+                    <>
+                      <span className="status-check">✅</span>
+                      Completed
+                    </>
+                  ) : isRunning ? (
+                    <>
+                      <span className="status-loading">⏳</span>
+                      Running...
+                    </>
+                  ) : (
+                    <>
+                      <span className="status-pending">⏸️</span>
+                      Waiting
+                    </>
+                  )}
+                </span>
+                {isCompleted && (
+                  <span className="completion-time">✓ Done</span>
                 )}
-              </span>
-              {stage.completed && (
-                <span className="completion-time">✓ Done</span>
+                {isRunning && (
+                  <span className="running-indicator">
+                    <span className="pulse-dot"></span>
+                    Processing
+                  </span>
+                )}
+              </div>
+
+              {/* Connection Line (Desktop only) */}
+              {index < stages.length - 1 && (
+                <div className={`card-connector ${isCompleted ? "completed" : ""}`}>
+                  <span className="connector-line"></span>
+                </div>
               )}
             </div>
-
-            {/* Connection Line (Desktop only) */}
-            {index < stages.length - 1 && (
-              <div className={`card-connector ${stage.completed ? "completed" : ""}`}>
-                <span className="connector-line"></span>
-              </div>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Summary Footer */}
@@ -252,12 +298,16 @@ function PipelineDashboard() {
           </div>
         </div>
         <div className="footer-message">
-          {completedStages === totalStages ? (
+          {isGenerating ? (
+            <span className="message-progress">
+              🚀 Processing: <strong>{currentStage}</strong>
+            </span>
+          ) : completedStages === totalStages ? (
             <span className="message-success">🎉 All stages completed successfully!</span>
           ) : completedStages === 0 ? (
             <span className="message-info">💡 Start the pipeline to see progress</span>
           ) : (
-            <span className="message-progress">🚀 Pipeline is running...</span>
+            <span className="message-partial">⏳ Pipeline paused at {currentStage || "unknown stage"}</span>
           )}
         </div>
       </div>
