@@ -34,26 +34,36 @@ def send_email(receiver_email, subject, body):
 
     try:
 
+        print("\n========== BREVO DEBUG ==========")
+        print("Sender      :", BREVO_SENDER)
+        print("Receiver    :", receiver_email)
+        print("Subject     :", subject)
+        print("API Key Set :", "YES" if BREVO_API_KEY else "NO")
+
         response = requests.post(
             url,
             headers=headers,
-            json=payload
+            json=payload,
+            timeout=30
         )
 
+        print("Status Code :", response.status_code)
+        print("Response    :", response.text)
+        print("=================================\n")
+
         if response.status_code == 201:
-
             print("✅ Email Sent Successfully")
-
             return True
-
         else:
-
-            print("❌ Brevo Error:", response.text)
-
+            print("❌ Failed to Send Email")
             return False
 
     except Exception as e:
 
-        print("❌ Email Exception:", e)
+        print("\n========== BREVO EXCEPTION ==========")
+        print("Sender      :", BREVO_SENDER)
+        print("Receiver    :", receiver_email)
+        print("Exception   :", str(e))
+        print("=====================================\n")
 
         return False
