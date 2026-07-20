@@ -3,6 +3,7 @@ import "../styles/FeaturesSection.css";
 
 function FeaturesSection() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
   const sectionRef = useRef(null);
 
   const features = [
@@ -87,6 +88,21 @@ function FeaturesSection() {
     return () => observer.disconnect();
   }, []);
 
+  // Touch handlers
+  const handleTouchStart = () => {
+    setIsTouched(true);
+  };
+
+  const handleTouchEnd = () => {
+    setTimeout(() => {
+      setIsTouched(false);
+    }, 150);
+  };
+
+  const handleTouchCancel = () => {
+    setIsTouched(false);
+  };
+
   return (
     <section 
       className="features-section" 
@@ -124,6 +140,9 @@ function FeaturesSection() {
             }}
             role="article"
             aria-labelledby={`feature-${feature.id}`}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
           >
             {/* Glow effect */}
             <div className="card-glow"></div>
@@ -161,7 +180,14 @@ function FeaturesSection() {
         <div className="cta-content">
           <span className="cta-icon">💡</span>
           <p className="cta-text">Ready to build your next application?</p>
-          <button className="cta-button" aria-label="Get started with AI App Compiler">
+          <button 
+            className="cta-button" 
+            aria-label="Get started with AI App Compiler"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
+            type="button"
+          >
             <span>Get Started</span>
             <span className="cta-arrow">→</span>
           </button>

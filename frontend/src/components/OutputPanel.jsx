@@ -14,6 +14,7 @@ function OutputPanel() {
 
   const [activeTab, setActiveTab] = useState("intent");
   const [copied, setCopied] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
   const jsonRef = useRef(null);
 
   // Tab configuration with icons and labels
@@ -63,6 +64,21 @@ function OutputPanel() {
     if (dataType === "array") return `${data.length} Items`;
     if (dataType === "object") return `${Object.keys(data).length} Keys`;
     return "Data Available";
+  };
+
+  // Touch handlers
+  const handleTouchStart = () => {
+    setIsTouched(true);
+  };
+
+  const handleTouchEnd = () => {
+    setTimeout(() => {
+      setIsTouched(false);
+    }, 150);
+  };
+
+  const handleTouchCancel = () => {
+    setIsTouched(false);
   };
 
   // Copy to clipboard
@@ -169,10 +185,14 @@ function OutputPanel() {
               className={`tab-btn ${activeTab === tab.id ? "active" : ""}`}
               onClick={() => setActiveTab(tab.id)}
               onKeyDown={(e) => handleTabKeyDown(e, tab.id)}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchCancel}
               role="tab"
               aria-selected={activeTab === tab.id}
               aria-controls={`panel-${tab.id}`}
               tabIndex={activeTab === tab.id ? 0 : -1}
+              type="button"
             >
               <span className="tab-icon">{tab.icon}</span>
               <span className="tab-label">{tab.label}</span>
@@ -199,8 +219,12 @@ function OutputPanel() {
             <button
               className={`copy-btn ${copied ? "copied" : ""}`}
               onClick={handleCopy}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchCancel}
               aria-label="Copy JSON to clipboard"
               title="Copy to clipboard"
+              type="button"
             >
               {copied ? (
                 <>

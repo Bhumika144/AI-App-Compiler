@@ -1,4 +1,8 @@
 /* ========================================
+   FEATURES SECTION - FULLY RESPONSIVE
+   ======================================== */
+
+/* ========================================
    ROOT VARIABLES
    ======================================== */
 :root {
@@ -10,6 +14,9 @@
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
   --text-tertiary: #64748b;
+  --accent-purple: #7c3aed;
+  --accent-purple-light: #a855f7;
+  --accent-cyan: #22d3ee;
   
   /* Spacing */
   --space-xs: 4px;
@@ -51,6 +58,7 @@
   margin: var(--space-6xl) auto;
   padding: 0 var(--space-xl);
   position: relative;
+  z-index: 1;
 }
 
 /* ========================================
@@ -63,6 +71,8 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-md);
+  position: relative;
+  z-index: 2;
 }
 
 .features-header-badge {
@@ -78,6 +88,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  pointer-events: none;
 }
 
 .badge-icon {
@@ -133,6 +144,8 @@
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
 }
 
 .features-grid.visible {
@@ -156,6 +169,13 @@
   opacity: 0;
   animation: cardFadeIn 0.6s ease forwards;
   animation-delay: var(--animation-delay, 0s);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  z-index: 2;
+  min-height: 200px;
 }
 
 @keyframes cardFadeIn {
@@ -182,10 +202,7 @@
   filter: blur(80px);
   transition: opacity var(--transition-base);
   pointer-events: none;
-}
-
-.feature-card:hover .card-glow {
-  opacity: 0.08;
+  z-index: 0;
 }
 
 /* Card Accent Border */
@@ -198,19 +215,60 @@
   background: var(--card-accent, #7c3aed);
   opacity: 0.4;
   transition: opacity var(--transition-base);
+  pointer-events: none;
+  z-index: 3;
 }
 
-.feature-card:hover .card-accent-border {
-  opacity: 1;
+/* Touch Feedback - Active State */
+.feature-card:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+.feature-card.touched {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+/* Desktop Hover */
+@media (hover: hover) {
+  .feature-card:hover {
+    transform: translateY(-6px);
+    background: var(--bg-card-hover);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .feature-card:hover .card-glow {
+    opacity: 0.08;
+  }
+  
+  .feature-card:hover .card-accent-border {
+    opacity: 1;
+  }
+  
+  .feature-card:hover .card-icon-wrapper {
+    transform: scale(1.05) rotate(-3deg);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  
+  .feature-card:hover .card-icon {
+    transform: scale(1.1);
+  }
+  
+  .feature-card:hover .card-tag {
+    opacity: 1;
+  }
 }
 
 /* Card Content */
 .card-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  pointer-events: none;
 }
 
 /* Card Header */
@@ -231,21 +289,14 @@
   background: var(--card-bg, rgba(124, 58, 237, 0.08));
   transition: all var(--transition-base);
   border: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.feature-card:hover .card-icon-wrapper {
-  transform: scale(1.05) rotate(-3deg);
-  border-color: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
 }
 
 .card-icon {
   font-size: 1.8rem;
   line-height: 1;
   transition: transform var(--transition-base);
-}
-
-.feature-card:hover .card-icon {
-  transform: scale(1.1);
+  pointer-events: none;
 }
 
 .card-number {
@@ -257,6 +308,7 @@
   border: 1px solid var(--border-card);
   border-radius: var(--radius-sm);
   letter-spacing: 0.05em;
+  pointer-events: none;
 }
 
 /* Card Title */
@@ -266,6 +318,7 @@
   color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.01em;
+  pointer-events: none;
 }
 
 /* Card Description */
@@ -275,6 +328,7 @@
   line-height: 1.7;
   margin: 0;
   flex: 1;
+  pointer-events: none;
 }
 
 /* Card Footer */
@@ -290,10 +344,7 @@
   opacity: 0.6;
   transition: all var(--transition-fast);
   cursor: default;
-}
-
-.feature-card:hover .card-tag {
-  opacity: 1;
+  pointer-events: none;
 }
 
 /* ========================================
@@ -309,11 +360,15 @@
   border-radius: var(--radius-2xl);
   text-align: center;
   transition: all var(--transition-base);
+  position: relative;
+  z-index: 2;
 }
 
-.features-cta:hover {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: var(--shadow-md);
+@media (hover: hover) {
+  .features-cta:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-md);
+  }
 }
 
 .cta-content {
@@ -327,6 +382,7 @@
 .cta-icon {
   font-size: 2rem;
   line-height: 1;
+  pointer-events: none;
 }
 
 .cta-text {
@@ -334,6 +390,7 @@
   font-weight: 500;
   color: var(--text-primary);
   margin: 0;
+  pointer-events: none;
 }
 
 .cta-button {
@@ -351,30 +408,55 @@
   transition: all var(--transition-base);
   font-family: "Inter", sans-serif;
   box-shadow: 0 0 30px rgba(124, 58, 237, 0.2);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 3;
+  min-height: 44px;
+  min-width: 44px;
 }
 
-.cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+@media (hover: hover) {
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+  }
+  
+  .cta-button:hover .cta-arrow {
+    transform: translateX(4px);
+  }
 }
 
 .cta-button:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
 }
 
 .cta-arrow {
   transition: transform var(--transition-fast);
-}
-
-.cta-button:hover .cta-arrow {
-  transform: translateX(4px);
+  pointer-events: none;
 }
 
 /* ========================================
    RESPONSIVE DESIGN
    ======================================== */
 
-/* Tablet */
+/* Large Desktop */
+@media (min-width: 1440px) {
+  .features-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3xl);
+  }
+  
+  .feature-card {
+    padding: var(--space-3xl);
+  }
+  
+  .features-title {
+    font-size: 3rem;
+  }
+}
+
+/* Desktop */
 @media (max-width: 1024px) {
   .features-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -386,7 +468,7 @@
   }
 }
 
-/* Mobile */
+/* Tablet */
 @media (max-width: 768px) {
   .features-section {
     margin: var(--space-4xl) auto;
@@ -414,6 +496,12 @@
   .feature-card {
     padding: var(--space-xl);
     border-radius: var(--radius-xl);
+    min-height: 160px;
+  }
+  
+  /* Touch feedback for cards */
+  .feature-card:active {
+    transform: scale(0.98);
   }
   
   .card-icon-wrapper {
@@ -446,11 +534,18 @@
   .cta-button {
     width: 100%;
     justify-content: center;
+    padding: 12px var(--space-lg);
+    min-height: 48px;
   }
 }
 
 /* Small Mobile */
 @media (max-width: 480px) {
+  .features-section {
+    margin: var(--space-3xl) auto;
+    padding: 0 var(--space-sm);
+  }
+  
   .features-title {
     font-size: 1.5rem;
   }
@@ -467,11 +562,13 @@
   .feature-card {
     padding: var(--space-lg);
     border-radius: var(--radius-lg);
+    min-height: 140px;
   }
   
   .card-icon-wrapper {
     width: 40px;
     height: 40px;
+    border-radius: var(--radius-md);
   }
   
   .card-icon {
@@ -480,6 +577,7 @@
   
   .card-number {
     font-size: 0.6rem;
+    padding: 2px var(--space-sm);
   }
   
   .card-title {
@@ -500,7 +598,59 @@
   
   .cta-button {
     font-size: 0.85rem;
-    padding: 8px var(--space-lg);
+    padding: 10px var(--space-lg);
+    min-height: 44px;
+  }
+  
+  .cta-icon {
+    font-size: 1.5rem;
+  }
+  
+  .features-cta {
+    padding: var(--space-lg);
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+  .features-title {
+    font-size: 1.3rem;
+  }
+  
+  .features-subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .feature-card {
+    padding: var(--space-md);
+    min-height: 120px;
+  }
+  
+  .card-icon-wrapper {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .card-icon {
+    font-size: 1rem;
+  }
+  
+  .card-title {
+    font-size: 0.85rem;
+  }
+  
+  .card-description {
+    font-size: 0.75rem;
+  }
+  
+  .cta-button {
+    font-size: 0.8rem;
+    padding: 8px var(--space-md);
+    min-height: 40px;
+  }
+  
+  .cta-text {
+    font-size: 0.85rem;
   }
 }
 
@@ -542,7 +692,23 @@
     animation: none !important;
   }
   
+  .feature-card:hover {
+    transform: none !important;
+  }
+  
   .features-cta:hover {
+    transform: none !important;
+  }
+  
+  .cta-button:hover {
+    transform: none !important;
+  }
+  
+  .cta-button:active {
+    transform: none !important;
+  }
+  
+  .feature-card:active {
     transform: none !important;
   }
 }
@@ -584,24 +750,96 @@
 }
 
 /* ========================================
-   UTILITY - HOVER ANIMATIONS
+   TOUCH-SPECIFIC IMPROVEMENTS
    ======================================== */
-.feature-card {
-  cursor: default;
+
+/* Ensure all interactive elements have proper touch targets */
+.cta-button {
+  min-height: 44px;
+  min-width: 44px;
 }
 
-@media (hover: hover) {
-  .feature-card:hover {
-    transform: translateY(-6px);
-    background: var(--bg-card-hover);
-    border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: var(--shadow-lg);
-  }
+/* Prevent text selection on touch */
+.feature-card,
+.cta-button {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-/* Touch device optimization */
+/* Fix for iOS Safari - prevent zoom on double tap */
+.feature-card,
+.cta-button {
+  touch-action: manipulation !important;
+}
+
+/* Disable hover effects on touch devices */
 @media (hover: none) {
-  .feature-card:active {
-    transform: scale(0.98);
+  .feature-card:hover {
+    transform: none !important;
+    background: var(--bg-card) !important;
   }
+  
+  .feature-card:hover .card-glow {
+    opacity: 0 !important;
+  }
+  
+  .feature-card:hover .card-accent-border {
+    opacity: 0.4 !important;
+  }
+  
+  .feature-card:hover .card-icon-wrapper {
+    transform: none !important;
+  }
+  
+  .feature-card:hover .card-icon {
+    transform: none !important;
+  }
+  
+  .feature-card:hover .card-tag {
+    opacity: 0.6 !important;
+  }
+  
+  .cta-button:hover {
+    transform: none !important;
+  }
+  
+  .cta-button:hover .cta-arrow {
+    transform: none !important;
+  }
+  
+  .features-cta:hover {
+    transform: none !important;
+  }
+}
+
+/* Touch active state for cards */
+.feature-card:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+.feature-card.touched {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Touch active state for CTA button */
+.cta-button:active {
+  transform: scale(0.96);
+  transition: transform 0.1s ease;
+}
+
+/* Fix for any hidden overlays */
+.features-section * {
+  pointer-events: auto;
+}
+
+/* But allow pointer-events none for decorative elements */
+.features-section .card-glow,
+.features-section .card-accent-border,
+.features-section .badge-icon,
+.features-section .divider-diamond,
+.features-section .divider-line {
+  pointer-events: none;
 }

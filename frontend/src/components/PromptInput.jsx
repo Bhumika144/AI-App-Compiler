@@ -9,6 +9,7 @@ function PromptInput() {
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
   const textareaRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
 
   const {
     setIntentData,
@@ -58,7 +59,7 @@ function PromptInput() {
 
     try {
       setLoading(true);
-      setIsGenerating(true); // Set generating state to true
+      setIsGenerating(true);
 
       // Stage 1: Intent Extraction
       setCurrentStage("Intent Extraction");
@@ -109,12 +110,8 @@ function PromptInput() {
       console.log("Intent Data:", response.data);
       console.log("System Design:", designResponse.data);
 
-      // All stages complete
       setCurrentStage("Completed");
-
-      // Clear the prompt after successful generation
       setPrompt("");
-
       showToast("✨ Blueprint generated successfully!", "success");
     } catch (error) {
       console.error("Error:", error);
@@ -122,16 +119,14 @@ function PromptInput() {
         error.response?.data?.message || "Something went wrong. Please try again.",
         "error"
       );
-      // Reset stage on error
       setCurrentStage("");
     } finally {
       setLoading(false);
-      setIsGenerating(false); // Reset generating state
+      setIsGenerating(false);
     }
   };
 
   const handleKeyDown = (e) => {
-    // Ctrl+Enter or Cmd+Enter to submit
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
       e.preventDefault();
       generateBlueprint();
@@ -146,6 +141,21 @@ function PromptInput() {
   const handleClear = () => {
     setPrompt("");
     textareaRef.current?.focus();
+  };
+
+  // Touch handlers for buttons and chips
+  const handleTouchStart = () => {
+    setIsTouched(true);
+  };
+
+  const handleTouchEnd = () => {
+    setTimeout(() => {
+      setIsTouched(false);
+    }, 150);
+  };
+
+  const handleTouchCancel = () => {
+    setIsTouched(false);
   };
 
   const charCount = prompt.length;
@@ -178,6 +188,9 @@ function PromptInput() {
           aria-describedby="char-count"
           className={isAtLimit ? "at-limit" : ""}
           maxLength={500}
+          enterKeyHint="send"
+          inputMode="text"
+          autoComplete="off"
         />
         {loading && (
           <div className="textarea-overlay">
@@ -200,7 +213,15 @@ function PromptInput() {
             {charCount} / 500 characters
           </span>
           {prompt && (
-            <button className="clear-btn" onClick={handleClear} aria-label="Clear input">
+            <button
+              className="clear-btn"
+              onClick={handleClear}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchCancel}
+              aria-label="Clear input"
+              type="button"
+            >
               ✕ Clear
             </button>
           )}
@@ -210,8 +231,12 @@ function PromptInput() {
           <button
             className={`generate-btn ${loading ? "loading" : ""}`}
             onClick={generateBlueprint}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
             disabled={loading || isAtLimit}
             aria-label={loading ? "Generating blueprint..." : "Generate blueprint"}
+            type="button"
           >
             {loading ? (
               <>
@@ -241,8 +266,12 @@ function PromptInput() {
               key={index}
               className={`chip ${prompt === example ? "active" : ""}`}
               onClick={() => handleExampleClick(example)}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchCancel}
               disabled={loading}
               aria-label={`Use example: ${example}`}
+              type="button"
             >
               <span className="chip-icon">✨</span>
               {example}
@@ -266,7 +295,11 @@ function PromptInput() {
           <button
             className="toast-close"
             onClick={() => setToast({ show: false, message: "", type: "" })}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
             aria-label="Dismiss notification"
+            type="button"
           >
             ✕
           </button>
