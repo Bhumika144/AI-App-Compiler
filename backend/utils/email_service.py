@@ -4,9 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BREVO_API_KEY = os.getenv("BREVO_API_KEY")
-BREVO_SENDER = os.getenv("BREVO_SENDER")
-
+BREVO_API_KEY = os.getenv("BREVO_API_KEY", "").strip()
+BREVO_SENDER = os.getenv("BREVO_SENDER", "").strip()
 
 def send_email(receiver_email, subject, body):
 
