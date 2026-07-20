@@ -70,6 +70,8 @@
   transition: all var(--transition-base);
   box-shadow: var(--shadow-sm), var(--shadow-glow);
   -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 1;
 }
 
 .dashboard-container:hover {
@@ -89,6 +91,8 @@
   border-bottom: 1px solid var(--border-dashboard);
   flex-wrap: wrap;
   gap: var(--space-lg);
+  position: relative;
+  z-index: 1;
 }
 
 .header-left {
@@ -147,6 +151,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  position: relative;
+  z-index: 1;
 }
 
 .status-dot {
@@ -202,6 +208,8 @@
   border-radius: var(--radius-full);
   border: 1px solid var(--border-dashboard);
   white-space: nowrap;
+  position: relative;
+  z-index: 1;
 }
 
 /* ========================================
@@ -209,6 +217,8 @@
    ======================================== */
 .progress-section {
   margin-bottom: var(--space-3xl);
+  position: relative;
+  z-index: 1;
 }
 
 .progress-header {
@@ -306,10 +316,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-xs);
-  pointer-events: all;
-  cursor: default;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+  pointer-events: none;
 }
 
 .marker-dot {
@@ -374,6 +381,7 @@
   gap: var(--space-xl);
   margin-bottom: var(--space-3xl);
   position: relative;
+  z-index: 1;
 }
 
 /* ========================================
@@ -394,6 +402,8 @@
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  -webkit-user-select: none;
+  z-index: 1;
 }
 
 /* Card accent border */
@@ -407,6 +417,7 @@
   background: var(--card-accent, var(--accent-purple));
   opacity: 0.3;
   transition: opacity var(--transition-base);
+  z-index: 2;
 }
 
 /* Desktop hover effects */
@@ -429,11 +440,6 @@
 
 /* Touch feedback - Active state */
 .pipeline-status-card:active {
-  transform: scale(0.97);
-  transition: transform 0.1s ease;
-}
-
-.pipeline-status-card.touched {
   transform: scale(0.97);
   transition: transform 0.1s ease;
 }
@@ -497,6 +503,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-lg);
+  position: relative;
+  z-index: 2;
 }
 
 .card-step {
@@ -564,6 +572,8 @@
   flex: 1;
   text-align: center;
   margin: var(--space-md) 0;
+  position: relative;
+  z-index: 2;
 }
 
 .card-icon {
@@ -615,6 +625,8 @@
   margin-top: var(--space-lg);
   padding-top: var(--space-md);
   border-top: 1px solid var(--border-dashboard);
+  position: relative;
+  z-index: 2;
 }
 
 .card-status {
@@ -696,6 +708,8 @@
   border-top: 1px solid var(--border-dashboard);
   flex-wrap: wrap;
   gap: var(--space-lg);
+  position: relative;
+  z-index: 1;
 }
 
 .footer-stats {
@@ -759,37 +773,7 @@
 }
 
 /* ========================================
-   TOUCH RIPPLE EFFECT
-   ======================================== */
-.pipeline-status-card::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.15), transparent 70%);
-  transform: translate(-50%, -50%);
-  transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.pipeline-status-card:active::after {
-  width: 400px;
-  height: 400px;
-  opacity: 1;
-}
-
-/* Prevent ripple on completed/running cards */
-.pipeline-status-card.completed:active::after,
-.pipeline-status-card.running:active::after {
-  display: none;
-}
-
-/* ========================================
-   RESPONSIVE DESIGN - DESKTOP
+   RESPONSIVE DESIGN
    ======================================== */
 
 /* Large Desktop */
@@ -858,9 +842,7 @@
   }
 }
 
-/* ========================================
-   RESPONSIVE DESIGN - TABLET
-   ======================================== */
+/* Tablet */
 @media (max-width: 767px) {
   .dashboard-container {
     padding: var(--space-xl);
@@ -897,10 +879,12 @@
   .status-badge {
     max-width: 100%;
     font-size: 0.7rem;
+    padding: 6px var(--space-md);
   }
   
   .stage-counter {
     font-size: 0.75rem;
+    padding: 4px var(--space-sm);
   }
   
   .progress-track {
@@ -980,7 +964,7 @@
     font-size: 0.75rem;
   }
   
-  /* Larger touch targets */
+  /* Touch-friendly targets */
   .card-status-icon {
     min-width: 44px;
     min-height: 44px;
@@ -1004,22 +988,9 @@
     width: 14px;
     height: 14px;
   }
-  
-  .marker-dot {
-    width: 18px;
-    height: 18px;
-    border-width: 3px;
-  }
-  
-  .marker-label {
-    font-size: 0.65rem;
-    padding: 3px 8px;
-  }
 }
 
-/* ========================================
-   RESPONSIVE DESIGN - SMALL MOBILE
-   ======================================== */
+/* Small Mobile */
 @media (max-width: 480px) {
   .dashboard-container {
     padding: var(--space-lg);
@@ -1141,9 +1112,7 @@
   }
 }
 
-/* ========================================
-   EXTRA SMALL MOBILE
-   ======================================== */
+/* Extra Small Mobile */
 @media (max-width: 360px) {
   .dashboard-container {
     padding: var(--space-md);
@@ -1210,12 +1179,6 @@
   outline-offset: 2px;
 }
 
-.progress-marker:focus-visible {
-  outline: 2px solid var(--accent-purple);
-  outline-offset: 2px;
-  border-radius: var(--radius-full);
-}
-
 /* ========================================
    REDUCED MOTION
    ======================================== */
@@ -1223,7 +1186,6 @@
   .pipeline-status-card,
   .pipeline-status-card.running,
   .pipeline-status-card:active,
-  .pipeline-status-card.touched,
   .pipeline-status-card::after,
   .pulse-dot,
   .spinner,
@@ -1240,10 +1202,6 @@
   }
   
   .pipeline-status-card:active {
-    transform: none !important;
-  }
-  
-  .pipeline-status-card.touched {
     transform: none !important;
   }
   
