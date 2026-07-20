@@ -55,6 +55,8 @@
   flex-direction: column;
   gap: var(--space-lg);
   position: relative;
+  z-index: 1;
+  touch-action: pan-y;
 }
 
 /* ========================================
@@ -66,6 +68,8 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-md);
+  position: relative;
+  z-index: 2;
 }
 
 .prompt-header-left {
@@ -77,6 +81,7 @@
 .prompt-icon {
   font-size: 1.5rem;
   line-height: 1;
+  pointer-events: none;
 }
 
 .prompt-title {
@@ -85,6 +90,7 @@
   color: var(--text-primary);
   letter-spacing: -0.01em;
   margin: 0;
+  pointer-events: none;
 }
 
 .prompt-hint {
@@ -97,6 +103,7 @@
   letter-spacing: 0.02em;
   font-weight: 500;
   text-transform: uppercase;
+  pointer-events: none;
 }
 
 /* ========================================
@@ -109,6 +116,7 @@
   border-radius: var(--radius-lg);
   transition: all var(--transition-base);
   overflow: hidden;
+  z-index: 2;
 }
 
 .textarea-wrapper:hover {
@@ -136,6 +144,8 @@
   line-height: 1.7;
   resize: vertical;
   transition: min-height var(--transition-base);
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch;
 }
 
 .textarea-wrapper textarea::placeholder {
@@ -189,12 +199,14 @@
   border-radius: var(--radius-lg);
   z-index: 10;
   animation: fadeIn 0.3s ease;
+  pointer-events: none;
 }
 
 .textarea-overlay span {
   color: var(--text-secondary);
   font-size: 0.9rem;
   font-weight: 500;
+  pointer-events: none;
 }
 
 @keyframes fadeIn {
@@ -233,6 +245,8 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-md);
+  position: relative;
+  z-index: 2;
 }
 
 .footer-left {
@@ -249,6 +263,7 @@
   font-size: 0.8rem;
   color: var(--text-tertiary);
   transition: color var(--transition-fast);
+  pointer-events: none;
 }
 
 .char-icon {
@@ -278,12 +293,21 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   font-family: "Inter", sans-serif;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 36px;
+  min-width: 36px;
+  z-index: 3;
 }
 
 .clear-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
   border-color: rgba(255, 255, 255, 0.15);
+}
+
+.clear-btn:active {
+  transform: scale(0.95);
 }
 
 .footer-right {
@@ -312,6 +336,11 @@
   overflow: hidden;
   white-space: nowrap;
   box-shadow: 0 0 30px rgba(124, 58, 237, 0.2);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+  min-width: 44px;
+  z-index: 3;
 }
 
 .generate-btn::before {
@@ -323,19 +352,22 @@
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.6s ease;
+  pointer-events: none;
 }
 
-.generate-btn:hover:not(:disabled)::before {
-  left: 100%;
-}
+@media (hover: hover) {
+  .generate-btn:hover:not(:disabled)::before {
+    left: 100%;
+  }
 
-.generate-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+  .generate-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+  }
 }
 
 .generate-btn:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
 }
 
 .generate-btn:disabled {
@@ -351,6 +383,7 @@
 .btn-icon {
   font-size: 1.1rem;
   line-height: 1;
+  pointer-events: none;
 }
 
 .btn-spinner {
@@ -372,6 +405,8 @@
   gap: var(--space-md);
   padding-top: var(--space-md);
   border-top: 1px solid var(--border-input);
+  position: relative;
+  z-index: 2;
 }
 
 .examples-header {
@@ -383,6 +418,7 @@
 .examples-icon {
   font-size: 1rem;
   line-height: 1;
+  pointer-events: none;
 }
 
 .examples-label {
@@ -390,6 +426,7 @@
   color: var(--text-secondary);
   font-weight: 500;
   margin: 0;
+  pointer-events: none;
 }
 
 .example-chips {
@@ -414,18 +451,24 @@
   transition: all var(--transition-base);
   font-family: "Inter", sans-serif;
   white-space: nowrap;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 40px;
+  z-index: 3;
 }
 
-.chip:hover:not(:disabled) {
-  background: rgba(124, 58, 237, 0.1);
-  border-color: var(--accent-purple);
-  color: var(--text-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+@media (hover: hover) {
+  .chip:hover:not(:disabled) {
+    background: rgba(124, 58, 237, 0.1);
+    border-color: var(--accent-purple);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+  }
 }
 
 .chip:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
 }
 
 .chip.active {
@@ -444,10 +487,13 @@
   font-size: 0.8rem;
   line-height: 1;
   opacity: 0.7;
+  pointer-events: none;
 }
 
-.chip:hover .chip-icon {
-  opacity: 1;
+@media (hover: hover) {
+  .chip:hover .chip-icon {
+    opacity: 1;
+  }
 }
 
 /* ========================================
@@ -495,12 +541,14 @@
 .toast-icon {
   font-size: 1.2rem;
   line-height: 1;
+  pointer-events: none;
 }
 
 .toast-message {
   font-size: 0.9rem;
   color: var(--text-primary);
   font-weight: 500;
+  pointer-events: none;
 }
 
 .toast-close {
@@ -518,11 +566,19 @@
   transition: all var(--transition-fast);
   flex-shrink: 0;
   font-family: "Inter", sans-serif;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 36px;
+  min-width: 36px;
 }
 
 .toast-close:hover {
   background: rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
+}
+
+.toast-close:active {
+  transform: scale(0.9);
 }
 
 /* Toast Types */
@@ -549,6 +605,18 @@
 /* ========================================
    RESPONSIVE DESIGN
    ======================================== */
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+  .textarea-wrapper textarea {
+    min-height: 180px;
+  }
+  
+  .generate-btn {
+    padding: 12px var(--space-3xl);
+    font-size: 1rem;
+  }
+}
 
 /* Tablet */
 @media (max-width: 1024px) {
@@ -608,6 +676,7 @@
     width: 100%;
     justify-content: center;
     padding: 12px var(--space-xl);
+    min-height: 48px;
   }
   
   .example-chips {
@@ -619,6 +688,7 @@
     justify-content: center;
     padding: 10px var(--space-lg);
     white-space: normal;
+    min-height: 44px;
   }
   
   .toast {
@@ -652,22 +722,69 @@
   .clear-btn {
     font-size: 0.7rem;
     padding: 3px var(--space-sm);
+    min-height: 32px;
+    min-width: 32px;
   }
   
   .generate-btn {
     font-size: 0.85rem;
     padding: 10px var(--space-lg);
+    min-height: 44px;
   }
   
   .chip {
     font-size: 0.75rem;
     padding: 8px var(--space-md);
+    min-height: 40px;
   }
   
   .toast {
     bottom: var(--space-md);
     right: var(--space-md);
     width: calc(100% - var(--space-lg));
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .toast-message {
+    font-size: 0.8rem;
+  }
+  
+  .toast-close {
+    min-height: 32px;
+    min-width: 32px;
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+  .prompt-title {
+    font-size: 0.8rem;
+  }
+  
+  .prompt-icon {
+    font-size: 1rem;
+  }
+  
+  .textarea-wrapper textarea {
+    min-height: 70px;
+    padding: var(--space-sm);
+    font-size: 0.8rem;
+  }
+  
+  .char-count {
+    font-size: 0.65rem;
+  }
+  
+  .generate-btn {
+    font-size: 0.8rem;
+    padding: 8px var(--space-md);
+    min-height: 40px;
+  }
+  
+  .chip {
+    font-size: 0.7rem;
+    padding: 6px var(--space-sm);
+    min-height: 36px;
   }
 }
 
@@ -709,6 +826,18 @@
   .chip:hover:not(:disabled) {
     transform: none !important;
   }
+  
+  .generate-btn:active:not(:disabled) {
+    transform: none !important;
+  }
+  
+  .chip:active:not(:disabled) {
+    transform: none !important;
+  }
+  
+  .clear-btn:active {
+    transform: none !important;
+  }
 }
 
 /* ========================================
@@ -740,4 +869,101 @@
     color: black;
     background: white;
   }
+}
+
+/* ========================================
+   TOUCH-SPECIFIC IMPROVEMENTS
+   ======================================== */
+
+/* Ensure all interactive elements have proper touch targets */
+.generate-btn,
+.chip,
+.clear-btn,
+.toast-close {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Prevent text selection on touch */
+.generate-btn,
+.chip,
+.clear-btn,
+.toast-close,
+.textarea-wrapper textarea {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Fix for iOS Safari - prevent zoom on double tap */
+.generate-btn,
+.chip,
+.clear-btn,
+.toast-close,
+.textarea-wrapper textarea {
+  touch-action: manipulation !important;
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+  .generate-btn:hover:not(:disabled) {
+    transform: none !important;
+  }
+  
+  .chip:hover:not(:disabled) {
+    transform: none !important;
+  }
+  
+  .clear-btn:hover {
+    transform: none !important;
+  }
+  
+  .toast-close:hover {
+    transform: none !important;
+  }
+}
+
+/* Touch active states */
+.generate-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.chip:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.clear-btn:active {
+  transform: scale(0.95);
+}
+
+.toast-close:active {
+  transform: scale(0.9);
+}
+
+/* Fix for any hidden overlays */
+.prompt-container * {
+  pointer-events: auto;
+}
+
+/* But allow pointer-events none for decorative elements */
+.prompt-container .prompt-icon,
+.prompt-container .prompt-title,
+.prompt-container .prompt-hint,
+.prompt-container .char-icon,
+.prompt-container .examples-icon,
+.prompt-container .examples-label,
+.prompt-container .chip-icon,
+.prompt-container .toast-icon {
+  pointer-events: none;
+}
+
+/* Ensure textarea is scrollable on mobile */
+.textarea-wrapper textarea {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Fix for iOS Safari - prevent zoom on input focus */
+.textarea-wrapper textarea {
+  font-size: 16px !important; /* Prevents iOS zoom on focus */
 }
