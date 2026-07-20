@@ -7,6 +7,7 @@ function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
@@ -40,6 +41,15 @@ function Navbar() {
     return () => {
       window.removeEventListener("storage", checkAuth);
     };
+  }, []);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Handle click outside dropdown
@@ -123,27 +133,43 @@ function Navbar() {
     return "User";
   };
 
+  // Get user email
+  const getUserEmail = () => {
+    return user?.email || "";
+  };
+
   return (
-    <nav className="navbar" role="navigation" aria-label="Main navigation">
+    <nav className={`navbar ${scrolled ? "scrolled" : ""}`} role="navigation" aria-label="Main navigation">
       <div className="navbar-container">
-        {/* Logo */}
-        <div className="navbar-logo" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
-          <span className="logo-icon">⚡</span>
-          <span className="logo-text">AI App Compiler</span>
-          <span className="logo-badge">v1.0</span>
+        {/* Left Section - Logo */}
+        <div className="navbar-left">
+          <div className="navbar-logo" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
+            <span className="logo-icon">⚡</span>
+            <span className="logo-text">AI App Compiler</span>
+            <span className="logo-badge">v1.0</span>
+          </div>
         </div>
 
-        {/* Desktop Navigation Links */}
-        <div className="navbar-links desktop-nav">
-          <a href="/" className="nav-link active" aria-current="page">
-            Home
-          </a>
-          <a href="#pipeline" className="nav-link">
-            Pipeline
-          </a>
-          <a href="#about" className="nav-link">
-            About
-          </a>
+        {/* Center Section - Navigation Links */}
+        <div className="navbar-center desktop-nav">
+          <div className="nav-links-wrapper">
+            <a href="/" className="nav-link active" aria-current="page">
+              <span className="nav-link-icon">🏠</span>
+              <span>Home</span>
+            </a>
+            <a href="#pipeline" className="nav-link">
+              <span className="nav-link-icon">⚙️</span>
+              <span>Pipeline</span>
+            </a>
+            <a href="#features" className="nav-link">
+              <span className="nav-link-icon">✨</span>
+              <span>Features</span>
+            </a>
+            <a href="#about" className="nav-link">
+              <span className="nav-link-icon">ℹ️</span>
+              <span>About</span>
+            </a>
+          </div>
         </div>
 
         {/* Right Section - Profile / Auth */}
@@ -177,7 +203,7 @@ function Navbar() {
                     </div>
                     <div className="dropdown-user-info">
                       <span className="dropdown-user-name">{getDisplayName()}</span>
-                      <span className="dropdown-user-email">{user?.email || ""}</span>
+                      <span className="dropdown-user-email">{getUserEmail()}</span>
                     </div>
                   </div>
 
@@ -206,7 +232,7 @@ function Navbar() {
                 className="auth-btn signup-btn"
                 onClick={() => navigate("/signup")}
               >
-                Sign Up
+                Get Started
               </button>
             </div>
           )}
@@ -262,6 +288,10 @@ function Navbar() {
               <span className="nav-icon">⚙️</span>
               Pipeline
             </a>
+            <a href="#features" className="mobile-nav-link" onClick={closeMenu}>
+              <span className="nav-icon">✨</span>
+              Features
+            </a>
             <a href="#about" className="mobile-nav-link" onClick={closeMenu}>
               <span className="nav-icon">ℹ️</span>
               About
@@ -272,7 +302,7 @@ function Navbar() {
                 <div className="mobile-divider"></div>
                 <div className="mobile-user-info">
                   <span className="mobile-user-name">{getDisplayName()}</span>
-                  <span className="mobile-user-email">{user?.email || ""}</span>
+                  <span className="mobile-user-email">{getUserEmail()}</span>
                 </div>
                 <button 
                   className="mobile-logout-btn"
@@ -299,7 +329,7 @@ function Navbar() {
                   className="mobile-auth-btn signup-btn"
                   onClick={() => navigate("/signup")}
                 >
-                  Sign Up
+                  Get Started
                 </button>
               </div>
             )}
