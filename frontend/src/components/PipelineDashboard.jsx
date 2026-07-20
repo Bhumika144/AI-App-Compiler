@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { PipelineContext } from "../context/PipelineContext";
 import "../styles/PipelineDashboard.css";
 
@@ -15,6 +15,8 @@ function PipelineDashboard() {
   } = useContext(PipelineContext);
 
   const [animatedProgress, setAnimatedProgress] = useState(0);
+  const [touchActive, setTouchActive] = useState(null);
+  const cardRefs = useRef({});
 
   // Stage configuration with icons and descriptions
   const stageNames = [
@@ -129,8 +131,14 @@ function PipelineDashboard() {
     return "status-partial";
   };
 
-  // Get current stage index for progress markers
-  const currentStageIndex = stageNames.indexOf(currentStage);
+  // Touch handlers for cards
+  const handleTouchStart = (stageId) => {
+    setTouchActive(stageId);
+  };
+
+  const handleTouchEnd = () => {
+    setTouchActive(null);
+  };
 
   return (
     <div className="dashboard-container" role="region" aria-label="Pipeline Dashboard">
@@ -201,15 +209,29 @@ function PipelineDashboard() {
         {stages.map((stage, index) => {
           const isRunning = stage.name === currentStage && isGenerating;
           const isCompleted = stage.completed;
+          const isTouched = touchActive === stage.id;
 
           return (
             <div
               key={stage.id}
               className={`pipeline-status-card 
                 ${isCompleted ? "completed" : ""} 
-                ${isRunning ? "running" : ""}`}
+                ${isRunning ? "running" : ""}
+                ${isTouched ? "touched" : ""}`}
               role="listitem"
-              style={{ "--card-accent": stage.color }}
+              style={{ 
+                "--card-accent": stage.color,
+                touchAction: "manipulation"
+              }}
+              onTouchStart={() => handleTouchStart(stage.id)}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
+              onMouseDown={() => handleTouchStart(stage.id)}
+              onMouseUp={handleTouchEnd}
+              onMouseLeave={handleTouchEnd}
+              ref={(el) => {
+                if (el) cardRefs.current[stage.id] = el;
+              }}
             >
               {/* Card Header */}
               <div className="card-header">
