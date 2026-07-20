@@ -56,6 +56,47 @@
 }
 
 /* ========================================
+   CRITICAL: GLOBAL TOUCH FIXES (From Auth.css)
+   ======================================== */
+
+/* Fix for all interactive elements */
+button,
+a,
+[role="button"],
+[onClick] {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Fix for fixed/absolute positioned elements */
+[style*="position: fixed"],
+[style*="position: absolute"] {
+  pointer-events: auto !important;
+}
+
+/* Global touch fix */
+* {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+}
+
+/* Prevent text selection on touch */
+button,
+a,
+[role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* But allow text selection for inputs */
+input,
+textarea {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* ========================================
    OUTPUT CONTAINER
    ======================================== */
 .output-container {
@@ -112,7 +153,7 @@
   min-width: max-content;
 }
 
-/* Tab Button */
+/* Tab Button - CRITICAL FIX */
 .tab-btn {
   display: flex;
   align-items: center;
@@ -129,10 +170,14 @@
   position: relative;
   white-space: nowrap;
   font-family: "Inter", sans-serif;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  pointer-events: auto;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  pointer-events: auto !important;
   z-index: 2;
+  min-height: 44px;
+  min-width: 44px;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .tab-btn:hover {
@@ -247,7 +292,7 @@
   gap: var(--space-sm);
 }
 
-/* Copy Button */
+/* Copy Button - CRITICAL FIX */
 .copy-btn {
   display: flex;
   align-items: center;
@@ -262,13 +307,15 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   font-family: "Inter", sans-serif;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  pointer-events: auto;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  pointer-events: auto !important;
   min-height: 44px;
   min-width: 44px;
   justify-content: center;
   z-index: 2;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .copy-btn:hover {
@@ -304,6 +351,7 @@
   line-height: 1.8;
   -webkit-overflow-scrolling: touch;
   z-index: 1;
+  touch-action: pan-y;
 }
 
 .json-viewer.empty {
@@ -547,7 +595,7 @@
   }
 }
 
-/* Mobile */
+/* Mobile - CRITICAL FIXES */
 @media (max-width: 768px) {
   .output-container {
     border-radius: var(--radius-lg);

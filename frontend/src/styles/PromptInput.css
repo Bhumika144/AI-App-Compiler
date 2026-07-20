@@ -48,6 +48,49 @@
 }
 
 /* ========================================
+   CRITICAL: GLOBAL TOUCH FIXES (From Auth.css)
+   ======================================== */
+
+/* Fix for all interactive elements */
+button,
+a,
+[role="button"],
+[onClick] {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Fix for fixed/absolute positioned elements */
+[style*="position: fixed"],
+[style*="position: absolute"] {
+  pointer-events: auto !important;
+}
+
+/* Global touch fix */
+* {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+}
+
+/* Prevent text selection on touch */
+button,
+a,
+[role="button"],
+input,
+textarea {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* But allow text selection for inputs */
+input,
+textarea {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* ========================================
    PROMPT CONTAINER
    ======================================== */
 .prompt-container {
@@ -108,7 +151,7 @@
 }
 
 /* ========================================
-   TEXTAREA WRAPPER - CRITICAL FIX
+   TEXTAREA WRAPPER - Fixed
    ======================================== */
 .textarea-wrapper {
   position: relative;
@@ -131,7 +174,9 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
-/* Textarea - CRITICAL FIX */
+/* ========================================
+   TEXTAREA - CRITICAL FIX (Inspired by Auth.css)
+   ======================================== */
 .textarea-wrapper textarea {
   width: 100%;
   min-height: 140px;
@@ -146,18 +191,16 @@
   line-height: 1.7;
   resize: vertical;
   transition: min-height var(--transition-base);
-  touch-action: manipulation !important;
-  -webkit-overflow-scrolling: touch;
-  position: relative;
-  z-index: 6 !important;
-  pointer-events: auto !important;
+  /* CRITICAL: These are from auth.css and make it work */
+  -webkit-appearance: none;
   -webkit-touch-callout: default !important;
   -webkit-user-select: text !important;
   user-select: text !important;
-}
-
-/* CRITICAL: Prevent iOS zoom on focus */
-.textarea-wrapper textarea {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  position: relative;
+  z-index: 6 !important;
+  /* iOS zoom prevention */
   font-size: 16px !important;
 }
 
@@ -194,7 +237,9 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Textarea Overlay - FIX: Don't block input */
+/* ========================================
+   TEXTAREA OVERLAY - FIX: Don't block input
+   ======================================== */
 .textarea-overlay {
   position: absolute;
   top: 0;
@@ -747,39 +792,6 @@
   .toast-close {
     min-height: 32px;
     min-width: 32px;
-  }
-}
-
-/* ========================================
-   CRITICAL MOBILE FIXES - OVERRIDE
-   ======================================== */
-
-/* Force textarea to be touchable on all devices */
-.textarea-wrapper textarea {
-  -webkit-touch-callout: default !important;
-  -webkit-user-select: text !important;
-  user-select: text !important;
-  pointer-events: auto !important;
-  touch-action: manipulation !important;
-}
-
-/* Remove any invisible overlays */
-.textarea-wrapper::before,
-.textarea-wrapper::after {
-  display: none !important;
-}
-
-/* Ensure no parent elements are blocking */
-.prompt-container,
-.workspace-panel,
-.home-container {
-  overflow: visible !important;
-}
-
-/* Fix for iOS Safari */
-@supports (-webkit-touch-callout: none) {
-  .textarea-wrapper textarea {
-    font-size: 16px !important;
   }
 }
 
