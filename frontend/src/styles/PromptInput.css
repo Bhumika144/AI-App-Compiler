@@ -55,8 +55,9 @@
   flex-direction: column;
   gap: var(--space-lg);
   position: relative;
-  z-index: 1;
+  z-index: 2;
   touch-action: pan-y;
+  overflow: visible !important;
 }
 
 /* ========================================
@@ -107,7 +108,7 @@
 }
 
 /* ========================================
-   TEXTAREA WRAPPER
+   TEXTAREA WRAPPER - CRITICAL FIX
    ======================================== */
 .textarea-wrapper {
   position: relative;
@@ -115,8 +116,9 @@
   border: 2px solid var(--border-input);
   border-radius: var(--radius-lg);
   transition: all var(--transition-base);
-  overflow: hidden;
-  z-index: 2;
+  overflow: visible !important;
+  z-index: 5 !important;
+  touch-action: manipulation !important;
 }
 
 .textarea-wrapper:hover {
@@ -129,7 +131,7 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
-/* Textarea */
+/* Textarea - CRITICAL FIX */
 .textarea-wrapper textarea {
   width: 100%;
   min-height: 140px;
@@ -144,8 +146,19 @@
   line-height: 1.7;
   resize: vertical;
   transition: min-height var(--transition-base);
-  touch-action: manipulation;
+  touch-action: manipulation !important;
   -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 6 !important;
+  pointer-events: auto !important;
+  -webkit-touch-callout: default !important;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* CRITICAL: Prevent iOS zoom on focus */
+.textarea-wrapper textarea {
+  font-size: 16px !important;
 }
 
 .textarea-wrapper textarea::placeholder {
@@ -181,7 +194,7 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Textarea Overlay (Loading) */
+/* Textarea Overlay - FIX: Don't block input */
 .textarea-overlay {
   position: absolute;
   top: 0;
@@ -197,16 +210,20 @@
   justify-content: center;
   gap: var(--space-md);
   border-radius: var(--radius-lg);
-  z-index: 10;
+  z-index: 4 !important;
   animation: fadeIn 0.3s ease;
-  pointer-events: none;
+  pointer-events: none !important;
+}
+
+.textarea-overlay * {
+  pointer-events: none !important;
 }
 
 .textarea-overlay span {
   color: var(--text-secondary);
   font-size: 0.9rem;
   font-weight: 500;
-  pointer-events: none;
+  pointer-events: none !important;
 }
 
 @keyframes fadeIn {
@@ -228,6 +245,7 @@
   border-top-color: var(--accent-purple);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
+  pointer-events: none !important;
 }
 
 @keyframes spin {
@@ -298,6 +316,7 @@
   min-height: 36px;
   min-width: 36px;
   z-index: 3;
+  pointer-events: auto !important;
 }
 
 .clear-btn:hover {
@@ -341,6 +360,7 @@
   min-height: 44px;
   min-width: 44px;
   z-index: 3;
+  pointer-events: auto !important;
 }
 
 .generate-btn::before {
@@ -455,6 +475,7 @@
   -webkit-tap-highlight-color: transparent;
   min-height: 40px;
   z-index: 3;
+  pointer-events: auto !important;
 }
 
 @media (hover: hover) {
@@ -570,6 +591,7 @@
   -webkit-tap-highlight-color: transparent;
   min-height: 36px;
   min-width: 36px;
+  pointer-events: auto !important;
 }
 
 .toast-close:hover {
@@ -581,42 +603,9 @@
   transform: scale(0.9);
 }
 
-/* Toast Types */
-.toast-success {
-  border-color: rgba(52, 211, 153, 0.3);
-  background: rgba(52, 211, 153, 0.05);
-}
-
-.toast-error {
-  border-color: rgba(248, 113, 113, 0.3);
-  background: rgba(248, 113, 113, 0.05);
-}
-
-.toast-warning {
-  border-color: rgba(251, 191, 36, 0.3);
-  background: rgba(251, 191, 36, 0.05);
-}
-
-.toast-info {
-  border-color: rgba(34, 211, 238, 0.3);
-  background: rgba(34, 211, 238, 0.05);
-}
-
 /* ========================================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN - MOBILE FIRST
    ======================================== */
-
-/* Large Desktop */
-@media (min-width: 1440px) {
-  .textarea-wrapper textarea {
-    min-height: 180px;
-  }
-  
-  .generate-btn {
-    padding: 12px var(--space-3xl);
-    font-size: 1rem;
-  }
-}
 
 /* Tablet */
 @media (max-width: 1024px) {
@@ -634,7 +623,7 @@
   }
 }
 
-/* Mobile */
+/* Mobile - CRITICAL FIXES */
 @media (max-width: 768px) {
   .prompt-container {
     gap: var(--space-md);
@@ -657,10 +646,16 @@
     font-size: 1.2rem;
   }
   
+  .textarea-wrapper {
+    border-radius: var(--radius-md);
+    border-width: 2px;
+  }
+  
   .textarea-wrapper textarea {
     min-height: 100px;
     padding: var(--space-md);
-    font-size: 0.9rem;
+    font-size: 16px !important; /* Prevents iOS zoom */
+    line-height: 1.5;
   }
   
   .prompt-footer {
@@ -712,7 +707,7 @@
   .textarea-wrapper textarea {
     min-height: 80px;
     padding: var(--space-md);
-    font-size: 0.85rem;
+    font-size: 16px !important; /* Prevents iOS zoom */
   }
   
   .char-count {
@@ -755,36 +750,36 @@
   }
 }
 
-/* Extra Small Mobile */
-@media (max-width: 360px) {
-  .prompt-title {
-    font-size: 0.8rem;
-  }
-  
-  .prompt-icon {
-    font-size: 1rem;
-  }
-  
+/* ========================================
+   CRITICAL MOBILE FIXES - OVERRIDE
+   ======================================== */
+
+/* Force textarea to be touchable on all devices */
+.textarea-wrapper textarea {
+  -webkit-touch-callout: default !important;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+/* Remove any invisible overlays */
+.textarea-wrapper::before,
+.textarea-wrapper::after {
+  display: none !important;
+}
+
+/* Ensure no parent elements are blocking */
+.prompt-container,
+.workspace-panel,
+.home-container {
+  overflow: visible !important;
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
   .textarea-wrapper textarea {
-    min-height: 70px;
-    padding: var(--space-sm);
-    font-size: 0.8rem;
-  }
-  
-  .char-count {
-    font-size: 0.65rem;
-  }
-  
-  .generate-btn {
-    font-size: 0.8rem;
-    padding: 8px var(--space-md);
-    min-height: 40px;
-  }
-  
-  .chip {
-    font-size: 0.7rem;
-    padding: 6px var(--space-sm);
-    min-height: 36px;
+    font-size: 16px !important;
   }
 }
 
@@ -869,101 +864,4 @@
     color: black;
     background: white;
   }
-}
-
-/* ========================================
-   TOUCH-SPECIFIC IMPROVEMENTS
-   ======================================== */
-
-/* Ensure all interactive elements have proper touch targets */
-.generate-btn,
-.chip,
-.clear-btn,
-.toast-close {
-  min-height: 44px;
-  min-width: 44px;
-}
-
-/* Prevent text selection on touch */
-.generate-btn,
-.chip,
-.clear-btn,
-.toast-close,
-.textarea-wrapper textarea {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-/* Fix for iOS Safari - prevent zoom on double tap */
-.generate-btn,
-.chip,
-.clear-btn,
-.toast-close,
-.textarea-wrapper textarea {
-  touch-action: manipulation !important;
-}
-
-/* Disable hover effects on touch devices */
-@media (hover: none) {
-  .generate-btn:hover:not(:disabled) {
-    transform: none !important;
-  }
-  
-  .chip:hover:not(:disabled) {
-    transform: none !important;
-  }
-  
-  .clear-btn:hover {
-    transform: none !important;
-  }
-  
-  .toast-close:hover {
-    transform: none !important;
-  }
-}
-
-/* Touch active states */
-.generate-btn:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-.chip:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-.clear-btn:active {
-  transform: scale(0.95);
-}
-
-.toast-close:active {
-  transform: scale(0.9);
-}
-
-/* Fix for any hidden overlays */
-.prompt-container * {
-  pointer-events: auto;
-}
-
-/* But allow pointer-events none for decorative elements */
-.prompt-container .prompt-icon,
-.prompt-container .prompt-title,
-.prompt-container .prompt-hint,
-.prompt-container .char-icon,
-.prompt-container .examples-icon,
-.prompt-container .examples-label,
-.prompt-container .chip-icon,
-.prompt-container .toast-icon {
-  pointer-events: none;
-}
-
-/* Ensure textarea is scrollable on mobile */
-.textarea-wrapper textarea {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-}
-
-/* Fix for iOS Safari - prevent zoom on input focus */
-.textarea-wrapper textarea {
-  font-size: 16px !important; /* Prevents iOS zoom on focus */
 }
