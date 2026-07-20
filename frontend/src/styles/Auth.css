@@ -1,5 +1,5 @@
 /* ========================================
-   AUTH PAGES - FIXED LAPTOP LAYOUT
+   AUTH PAGES - COMPLETE & OPTIMIZED
    ======================================== */
 
 :root {
@@ -16,8 +16,9 @@
   --accent-blue: #3b82f6;
   --accent-green: #34d399;
   --accent-red: #f87171;
+  --accent-orange: #f59e0b;
   
-  /* Spacing - Optimized for fixed layout */
+  /* Spacing */
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 12px;
@@ -26,6 +27,7 @@
   --space-2xl: 24px;
   --space-3xl: 32px;
   --space-4xl: 40px;
+  --space-5xl: 48px;
   
   /* Border Radius */
   --radius-sm: 6px;
@@ -49,20 +51,20 @@
 }
 
 /* ========================================
-   AUTH CONTAINER - FIXED HEIGHT
+   AUTH CONTAINER
    ======================================== */
 .auth-container {
   height: 100vh;
-  height: 100dvh; /* Dynamic viewport height for mobile */
+  height: 100dvh;
   display: flex;
   background: var(--auth-bg);
   overflow: hidden;
   position: relative;
-  min-height: 600px; /* Minimum height for small screens */
+  min-height: 600px;
 }
 
 /* ========================================
-   LEFT PANEL - FIXED
+   LEFT PANEL
    ======================================== */
 .auth-left {
   flex: 1;
@@ -138,7 +140,7 @@
   margin-bottom: var(--space-3xl);
 }
 
-/* Features List - Optimized for fixed layout */
+/* Features List */
 .feature-list {
   display: flex;
   flex-direction: column;
@@ -179,7 +181,7 @@
   box-shadow: var(--shadow-glow);
 }
 
-/* Blur Circles - Fixed positioning */
+/* Blur Circles */
 .blur-circle {
   position: absolute;
   border-radius: 50%;
@@ -206,7 +208,6 @@
   animation: floatTwo 10s infinite ease-in-out;
 }
 
-/* Mobile-only blur circle - hidden on desktop */
 .circle-three {
   display: none;
 }
@@ -222,7 +223,7 @@
 }
 
 /* ========================================
-   RIGHT PANEL - FIXED
+   RIGHT PANEL
    ======================================== */
 .auth-card-container {
   flex: 1;
@@ -259,7 +260,7 @@
 }
 
 /* ========================================
-   TABS - Optimized
+   TABS
    ======================================== */
 .tab-header {
   position: relative;
@@ -285,6 +286,10 @@
   font-family: "Inter", sans-serif;
   border-radius: var(--radius-full);
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
 }
 
 .tab-header button:hover {
@@ -294,6 +299,11 @@
 .tab-header button.active-tab {
   color: white;
   font-weight: 600;
+}
+
+.tab-icon {
+  font-size: 0.9rem;
+  line-height: 1;
 }
 
 .tab-slider {
@@ -313,7 +323,7 @@
 }
 
 /* ========================================
-   FORM - Compact for fixed layout
+   FORM
    ======================================== */
 .form-wrapper {
   animation: formFade 0.4s ease;
@@ -345,6 +355,7 @@
   font-size: 0.9rem;
 }
 
+/* Input Groups */
 .input-group {
   display: flex;
   flex-direction: column;
@@ -389,14 +400,23 @@
 
 .input-group input.input-error {
   border-color: var(--accent-red);
+  box-shadow: 0 0 20px rgba(248, 113, 113, 0.1);
 }
 
 .input-group .error-message {
   color: var(--accent-red);
   font-size: 0.75rem;
   margin-top: var(--space-xs);
+  animation: shake 0.3s ease;
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Password Box */
 .password-box {
   position: relative;
 }
@@ -413,14 +433,37 @@
   color: var(--text-muted);
   transition: color var(--transition-fast);
   padding: 4px;
+  font-family: "Inter", sans-serif;
 }
 
 .eye-btn:hover {
   color: var(--text-primary);
 }
 
+/* Forgot Password */
+.forgot-password {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-xl);
+}
+
+.forgot-password button {
+  background: none;
+  border: none;
+  color: var(--accent-purple-light);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all var(--transition-fast);
+  font-family: "Inter", sans-serif;
+}
+
+.forgot-password button:hover {
+  color: var(--accent-purple);
+  text-decoration: underline;
+}
+
 /* ========================================
-   PRIMARY BUTTON - Optimized
+   PRIMARY BUTTON
    ======================================== */
 .primary-btn {
   width: 100%;
@@ -517,31 +560,7 @@
 }
 
 /* ========================================
-   FORGOT PASSWORD
-   ======================================== */
-.forgot-password {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: var(--space-xl);
-}
-
-.forgot-password button {
-  background: none;
-  border: none;
-  color: var(--accent-purple-light);
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: all var(--transition-fast);
-  font-family: "Inter", sans-serif;
-}
-
-.forgot-password button:hover {
-  color: var(--accent-purple);
-  text-decoration: underline;
-}
-
-/* ========================================
-   OTP PAGE - Fixed
+   OTP PAGE
    ======================================== */
 .otp-card {
   max-width: 420px;
@@ -683,10 +702,10 @@
 }
 
 /* ========================================
-   RESPONSIVE DESIGN - FIXED LAYOUT
+   RESPONSIVE DESIGN
    ======================================== */
 
-/* Large Desktop (1440px+) */
+/* Large Desktop */
 @media (min-width: 1440px) {
   .auth-left {
     padding: var(--space-4xl) var(--space-5xl);
@@ -702,7 +721,7 @@
   }
 }
 
-/* Standard Laptop (1024px - 1439px) - FIXED PERFECT */
+/* Standard Laptop */
 @media (min-width: 1024px) and (max-width: 1439px) {
   .auth-left {
     padding: var(--space-4xl);
@@ -756,7 +775,7 @@
   }
 }
 
-/* Small Laptop (900px - 1023px) */
+/* Small Laptop */
 @media (min-width: 900px) and (max-width: 1023px) {
   .auth-left {
     padding: var(--space-3xl);
@@ -839,8 +858,12 @@
   }
 }
 
-/* Tablet (768px - 899px) - Still fixed */
+/* Tablet */
 @media (min-width: 768px) and (max-width: 899px) {
+  .auth-left {
+    padding: var(--space-3xl);
+  }
+  
   .auth-left h1 {
     font-size: 2.5rem;
   }
@@ -868,9 +891,7 @@
   }
 }
 
-/* ========================================
-   MOBILE - Stacked Layout (Below 768px)
-   ======================================== */
+/* Mobile */
 @media (max-width: 767px) {
   .auth-container {
     flex-direction: column;
@@ -978,7 +999,7 @@
   }
 }
 
-/* Small Mobile (Below 480px) */
+/* Small Mobile */
 @media (max-width: 479px) {
   .auth-left {
     padding: var(--space-2xl) var(--space-lg);
@@ -1161,7 +1182,7 @@
 }
 
 /* ========================================
-   SCROLLBAR STYLING (Mobile only)
+   SCROLLBAR STYLING
    ======================================== */
 @media (max-width: 767px) {
   .auth-container::-webkit-scrollbar {

@@ -69,6 +69,7 @@
   padding: var(--space-3xl);
   transition: all var(--transition-base);
   box-shadow: var(--shadow-sm), var(--shadow-glow);
+  -webkit-overflow-scrolling: touch;
 }
 
 .dashboard-container:hover {
@@ -307,6 +308,8 @@
   gap: var(--space-xs);
   pointer-events: all;
   cursor: default;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .marker-dot {
@@ -384,10 +387,13 @@
   transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
-  cursor: default;
+  cursor: pointer;
   min-height: 200px;
   display: flex;
   flex-direction: column;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 /* Card accent border */
@@ -403,15 +409,33 @@
   transition: opacity var(--transition-base);
 }
 
-.pipeline-status-card:hover {
-  transform: translateY(-4px);
-  background: var(--bg-card-hover);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: var(--shadow-md);
+/* Desktop hover effects */
+@media (hover: hover) {
+  .pipeline-status-card:hover {
+    transform: translateY(-4px);
+    background: var(--bg-card-hover);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .pipeline-status-card:hover::before {
+    opacity: 1;
+  }
+  
+  .pipeline-status-card:hover .card-icon {
+    transform: scale(1.05);
+  }
 }
 
-.pipeline-status-card:hover::before {
-  opacity: 1;
+/* Touch feedback - Active state */
+.pipeline-status-card:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+.pipeline-status-card.touched {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
 }
 
 /* Completed card */
@@ -425,12 +449,14 @@
   opacity: 1;
 }
 
-.pipeline-status-card.completed:hover {
-  border-color: rgba(52, 211, 153, 0.4);
-  box-shadow: 0 0 30px rgba(52, 211, 153, 0.1);
+@media (hover: hover) {
+  .pipeline-status-card.completed:hover {
+    border-color: rgba(52, 211, 153, 0.4);
+    box-shadow: 0 0 30px rgba(52, 211, 153, 0.1);
+  }
 }
 
-/* Running card - NEW */
+/* Running card */
 .pipeline-status-card.running {
   border-color: var(--accent-orange);
   background: rgba(245, 158, 11, 0.05);
@@ -458,9 +484,11 @@
   }
 }
 
-.pipeline-status-card.running:hover {
-  animation: pulse-card 1.2s ease-in-out infinite;
-  transform: scale(1.02);
+@media (hover: hover) {
+  .pipeline-status-card.running:hover {
+    animation: pulse-card 1.2s ease-in-out infinite;
+    transform: scale(1.02);
+  }
 }
 
 /* Card Header */
@@ -485,6 +513,11 @@
 .card-status-icon {
   font-size: 1.1rem;
   line-height: 1;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .checkmark {
@@ -544,10 +577,6 @@
   margin-bottom: var(--space-md);
   background: rgba(124, 58, 237, 0.08);
   transition: all var(--transition-base);
-}
-
-.pipeline-status-card:hover .card-icon {
-  transform: scale(1.05);
 }
 
 .pipeline-status-card.running .card-icon {
@@ -656,38 +685,6 @@
   display: none;
 }
 
-/* Desktop connector line */
-@media (min-width: 1024px) {
-  .pipeline-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .card-connector {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: -20px;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 2px;
-    background: var(--border-dashboard);
-    transition: all var(--transition-base);
-    z-index: 0;
-  }
-  
-  .card-connector.completed {
-    background: var(--accent-green);
-  }
-  
-  .card-connector .connector-line {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: inherit;
-    border-radius: var(--radius-full);
-  }
-}
-
 /* ========================================
    FOOTER
    ======================================== */
@@ -762,27 +759,109 @@
 }
 
 /* ========================================
-   RESPONSIVE DESIGN
+   TOUCH RIPPLE EFFECT
+   ======================================== */
+.pipeline-status-card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.15), transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pipeline-status-card:active::after {
+  width: 400px;
+  height: 400px;
+  opacity: 1;
+}
+
+/* Prevent ripple on completed/running cards */
+.pipeline-status-card.completed:active::after,
+.pipeline-status-card.running:active::after {
+  display: none;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - DESKTOP
    ======================================== */
 
-/* Tablet */
-@media (max-width: 1024px) {
-  .dashboard-container {
-    padding: var(--space-2xl);
+/* Large Desktop */
+@media (min-width: 1440px) {
+  .pipeline-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2xl);
   }
   
+  .dashboard-container {
+    padding: var(--space-4xl);
+  }
+}
+
+/* Standard Desktop */
+@media (min-width: 1024px) and (max-width: 1439px) {
   .pipeline-grid {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+  }
+  
+  .card-connector {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: -20px;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 2px;
+    background: var(--border-dashboard);
+    transition: all var(--transition-base);
+    z-index: 0;
+  }
+  
+  .card-connector.completed {
+    background: var(--accent-green);
+  }
+  
+  .card-connector .connector-line {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    border-radius: var(--radius-full);
+  }
+}
+
+/* Small Desktop / Tablet Large */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pipeline-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--space-lg);
+  }
+  
+  .dashboard-container {
+    padding: var(--space-2xl);
   }
   
   .header-title {
     font-size: 1.3rem;
   }
+  
+  .status-badge {
+    max-width: 150px;
+    font-size: 0.7rem;
+  }
 }
 
-/* Mobile */
-@media (max-width: 768px) {
+/* ========================================
+   RESPONSIVE DESIGN - TABLET
+   ======================================== */
+@media (max-width: 767px) {
   .dashboard-container {
     padding: var(--space-xl);
     border-radius: var(--radius-lg);
@@ -811,9 +890,17 @@
     font-size: 0.8rem;
   }
   
+  .header-icon {
+    font-size: 1.5rem;
+  }
+  
   .status-badge {
     max-width: 100%;
     font-size: 0.7rem;
+  }
+  
+  .stage-counter {
+    font-size: 0.75rem;
   }
   
   .progress-track {
@@ -824,6 +911,14 @@
     font-size: 1.2rem;
   }
   
+  .progress-label {
+    font-size: 0.8rem;
+  }
+  
+  .progress-markers {
+    display: none;
+  }
+  
   .pipeline-grid {
     grid-template-columns: 1fr;
     gap: var(--space-md);
@@ -832,6 +927,7 @@
   .pipeline-status-card {
     min-height: 160px;
     padding: var(--space-lg);
+    border-radius: var(--radius-md);
   }
   
   .pipeline-status-card.running {
@@ -847,6 +943,20 @@
     }
   }
   
+  .card-icon {
+    width: 52px;
+    height: 52px;
+    font-size: 1.6rem;
+  }
+  
+  .card-title {
+    font-size: 0.95rem;
+  }
+  
+  .card-description {
+    font-size: 0.8rem;
+  }
+  
   .dashboard-footer {
     flex-direction: column;
     align-items: stretch;
@@ -859,14 +969,57 @@
   
   .footer-message {
     text-align: center;
+    font-size: 0.85rem;
   }
   
-  .progress-markers {
-    display: none;
+  .stat-value {
+    font-size: 1.1rem;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+  }
+  
+  /* Larger touch targets */
+  .card-status-icon {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .checkmark {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+  
+  .spinner {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .pending-dot {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .marker-dot {
+    width: 18px;
+    height: 18px;
+    border-width: 3px;
+  }
+  
+  .marker-label {
+    font-size: 0.65rem;
+    padding: 3px 8px;
   }
 }
 
-/* Small Mobile */
+/* ========================================
+   RESPONSIVE DESIGN - SMALL MOBILE
+   ======================================== */
 @media (max-width: 480px) {
   .dashboard-container {
     padding: var(--space-lg);
@@ -874,16 +1027,24 @@
   }
   
   .header-icon {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+  }
+  
+  .header-title {
+    font-size: 0.95rem;
+  }
+  
+  .header-subtitle {
+    font-size: 0.7rem;
   }
   
   .status-badge {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     padding: 4px var(--space-md);
   }
   
   .stage-counter {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     padding: 4px var(--space-sm);
   }
   
@@ -895,9 +1056,14 @@
     font-size: 1rem;
   }
   
+  .progress-label {
+    font-size: 0.75rem;
+  }
+  
   .pipeline-status-card {
     min-height: 140px;
     padding: var(--space-md);
+    border-radius: var(--radius-sm);
   }
   
   .pipeline-status-card.running {
@@ -920,11 +1086,33 @@
   }
   
   .card-title {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
   
   .card-description {
     font-size: 0.75rem;
+  }
+  
+  .card-step {
+    font-size: 0.6rem;
+  }
+  
+  .card-status {
+    font-size: 0.7rem;
+  }
+  
+  .card-footer {
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: stretch;
+  }
+  
+  .completion-time {
+    text-align: right;
+  }
+  
+  .running-indicator {
+    justify-content: flex-end;
   }
   
   .footer-stats {
@@ -933,19 +1121,178 @@
   }
   
   .stat-value {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   
   .stat-label {
+    font-size: 0.65rem;
+  }
+  
+  .stat-divider {
+    height: 16px;
+  }
+  
+  .footer-message {
+    font-size: 0.8rem;
+  }
+  
+  .dashboard-footer {
+    gap: var(--space-sm);
+  }
+}
+
+/* ========================================
+   EXTRA SMALL MOBILE
+   ======================================== */
+@media (max-width: 360px) {
+  .dashboard-container {
+    padding: var(--space-md);
+  }
+  
+  .header-left {
+    gap: var(--space-sm);
+  }
+  
+  .header-icon {
+    font-size: 1rem;
+  }
+  
+  .header-title {
+    font-size: 0.85rem;
+  }
+  
+  .pipeline-status-card {
+    min-height: 120px;
+    padding: var(--space-sm);
+  }
+  
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+  
+  .card-title {
+    font-size: 0.8rem;
+  }
+  
+  .card-description {
     font-size: 0.7rem;
+  }
+  
+  .card-footer {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  
+  .card-status {
+    font-size: 0.65rem;
+  }
+  
+  .footer-stats {
+    gap: var(--space-xs);
+  }
+  
+  .stat-value {
+    font-size: 0.8rem;
+  }
+  
+  .stat-label {
+    font-size: 0.6rem;
   }
 }
 
 /* ========================================
    ACCESSIBILITY & FOCUS STATES
    ======================================== */
-.pipeline-status-card:focus-visible 
-{
+.pipeline-status-card:focus-visible {
   outline: 2px solid var(--accent-purple);
   outline-offset: 2px;
+}
+
+.progress-marker:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+  border-radius: var(--radius-full);
+}
+
+/* ========================================
+   REDUCED MOTION
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  .pipeline-status-card,
+  .pipeline-status-card.running,
+  .pipeline-status-card:active,
+  .pipeline-status-card.touched,
+  .pipeline-status-card::after,
+  .pulse-dot,
+  .spinner,
+  .progress-fill,
+  .progress-glow,
+  .header-icon,
+  .status-dot,
+  .footer-message,
+  .marker-dot,
+  .card-icon {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+  
+  .pipeline-status-card:active {
+    transform: none !important;
+  }
+  
+  .pipeline-status-card.touched {
+    transform: none !important;
+  }
+  
+  .pipeline-status-card:hover {
+    transform: none !important;
+  }
+  
+  .pipeline-status-card.running:hover {
+    transform: none !important;
+  }
+  
+  .pipeline-status-card.running {
+    transform: none !important;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+  .dashboard-container {
+    background: white;
+    border: 1px solid #ddd;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  
+  .pipeline-status-card {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+  
+  .pipeline-status-card.completed {
+    background: #e8f5e9;
+  }
+  
+  .progress-fill {
+    background: #7c3aed;
+  }
+  
+  .status-badge {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  .pulse-dot,
+  .spinner,
+  .progress-glow {
+    display: none;
+  }
 }
