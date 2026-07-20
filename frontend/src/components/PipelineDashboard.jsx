@@ -137,11 +137,43 @@ function PipelineDashboard() {
   };
 
   const handleTouchEnd = () => {
+    setTimeout(() => {
+      setTouchActive(null);
+    }, 150);
+  };
+
+  const handleTouchCancel = () => {
     setTouchActive(null);
   };
 
+  // Mouse handlers for desktop
+  const handleMouseDown = (stageId) => {
+    setTouchActive(stageId);
+  };
+
+  const handleMouseUp = () => {
+    setTimeout(() => {
+      setTouchActive(null);
+    }, 150);
+  };
+
+  const handleMouseLeave = () => {
+    setTouchActive(null);
+  };
+
+  // Prevent default touch behavior to avoid conflicts
+  const handleTouchMove = (e) => {
+    // Allow scrolling, don't prevent default
+    // This ensures cards don't block scrolling
+  };
+
   return (
-    <div className="dashboard-container" role="region" aria-label="Pipeline Dashboard">
+    <div 
+      className="dashboard-container" 
+      role="region" 
+      aria-label="Pipeline Dashboard"
+      style={{ touchAction: "pan-y" }}
+    >
       {/* Header */}
       <div className="dashboard-header">
         <div className="header-left">
@@ -221,14 +253,16 @@ function PipelineDashboard() {
               role="listitem"
               style={{ 
                 "--card-accent": stage.color,
-                touchAction: "manipulation"
+                touchAction: "manipulation",
+                cursor: "pointer"
               }}
               onTouchStart={() => handleTouchStart(stage.id)}
               onTouchEnd={handleTouchEnd}
-              onTouchCancel={handleTouchEnd}
-              onMouseDown={() => handleTouchStart(stage.id)}
-              onMouseUp={handleTouchEnd}
-              onMouseLeave={handleTouchEnd}
+              onTouchCancel={handleTouchCancel}
+              onTouchMove={handleTouchMove}
+              onMouseDown={() => handleMouseDown(stage.id)}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
               ref={(el) => {
                 if (el) cardRefs.current[stage.id] = el;
               }}
