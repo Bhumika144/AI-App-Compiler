@@ -9,7 +9,6 @@ function PromptInput() {
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
   const textareaRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
 
   const {
     setIntentData,
@@ -143,27 +142,12 @@ function PromptInput() {
     textareaRef.current?.focus();
   };
 
-  // Touch handlers for buttons and chips
-  const handleTouchStart = () => {
-    setIsTouched(true);
-  };
-
-  const handleTouchEnd = () => {
-    setTimeout(() => {
-      setIsTouched(false);
-    }, 150);
-  };
-
-  const handleTouchCancel = () => {
-    setIsTouched(false);
-  };
-
   const charCount = prompt.length;
   const isNearLimit = charCount > 450;
   const isAtLimit = charCount >= 500;
 
   return (
-    <div className="prompt-container">
+    <div className="prompt-container" style={{ position: "relative", zIndex: 10 }}>
       {/* Header */}
       <div className="prompt-header">
         <div className="prompt-header-left">
@@ -191,9 +175,15 @@ function PromptInput() {
           enterKeyHint="send"
           inputMode="text"
           autoComplete="off"
+          style={{ 
+            position: "relative", 
+            zIndex: 20,
+            pointerEvents: "auto !important",
+            touchAction: "manipulation"
+          }}
         />
         {loading && (
-          <div className="textarea-overlay">
+          <div className="textarea-overlay" style={{ pointerEvents: "none !important" }}>
             <div className="loading-spinner"></div>
             <span>Processing your request...</span>
           </div>
@@ -216,11 +206,14 @@ function PromptInput() {
             <button
               className="clear-btn"
               onClick={handleClear}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-              onTouchCancel={handleTouchCancel}
               aria-label="Clear input"
               type="button"
+              style={{ 
+                pointerEvents: "auto !important",
+                touchAction: "manipulation",
+                position: "relative",
+                zIndex: 30
+              }}
             >
               ✕ Clear
             </button>
@@ -231,12 +224,15 @@ function PromptInput() {
           <button
             className={`generate-btn ${loading ? "loading" : ""}`}
             onClick={generateBlueprint}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-            onTouchCancel={handleTouchCancel}
             disabled={loading || isAtLimit}
             aria-label={loading ? "Generating blueprint..." : "Generate blueprint"}
             type="button"
+            style={{ 
+              pointerEvents: "auto !important",
+              touchAction: "manipulation",
+              position: "relative",
+              zIndex: 30
+            }}
           >
             {loading ? (
               <>
@@ -260,18 +256,21 @@ function PromptInput() {
           <p className="examples-label">Try an example:</p>
         </div>
 
-        <div className="example-chips">
+        <div className="example-chips" style={{ position: "relative", zIndex: 30 }}>
           {examples.map((example, index) => (
             <button
               key={index}
               className={`chip ${prompt === example ? "active" : ""}`}
               onClick={() => handleExampleClick(example)}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-              onTouchCancel={handleTouchCancel}
               disabled={loading}
               aria-label={`Use example: ${example}`}
               type="button"
+              style={{ 
+                pointerEvents: "auto !important",
+                touchAction: "manipulation",
+                position: "relative",
+                zIndex: 30
+              }}
             >
               <span className="chip-icon">✨</span>
               {example}
@@ -282,7 +281,7 @@ function PromptInput() {
 
       {/* Toast Notification */}
       {toast.show && (
-        <div className={`toast toast-${toast.type}`} role="alert">
+        <div className={`toast toast-${toast.type}`} role="alert" style={{ zIndex: 99999 }}>
           <div className="toast-content">
             <span className="toast-icon">
               {toast.type === "success" && "✅"}
@@ -295,11 +294,12 @@ function PromptInput() {
           <button
             className="toast-close"
             onClick={() => setToast({ show: false, message: "", type: "" })}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-            onTouchCancel={handleTouchCancel}
             aria-label="Dismiss notification"
             type="button"
+            style={{ 
+              pointerEvents: "auto !important",
+              touchAction: "manipulation"
+            }}
           >
             ✕
           </button>

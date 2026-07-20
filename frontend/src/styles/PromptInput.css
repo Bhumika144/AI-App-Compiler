@@ -73,23 +73,6 @@ a,
   -webkit-touch-callout: none;
 }
 
-/* Prevent text selection on touch */
-button,
-a,
-[role="button"],
-input,
-textarea {
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-/* But allow text selection for inputs */
-input,
-textarea {
-  -webkit-user-select: text !important;
-  user-select: text !important;
-}
-
 /* ========================================
    PROMPT CONTAINER
    ======================================== */
@@ -98,7 +81,7 @@ textarea {
   flex-direction: column;
   gap: var(--space-lg);
   position: relative;
-  z-index: 2;
+  z-index: 10 !important;
   touch-action: pan-y;
   overflow: visible !important;
 }
@@ -151,7 +134,7 @@ textarea {
 }
 
 /* ========================================
-   TEXTAREA WRAPPER - Fixed
+   TEXTAREA WRAPPER - FIXED
    ======================================== */
 .textarea-wrapper {
   position: relative;
@@ -175,7 +158,7 @@ textarea {
 }
 
 /* ========================================
-   TEXTAREA - CRITICAL FIX (Inspired by Auth.css)
+   TEXTAREA - CRITICAL FIX
    ======================================== */
 .textarea-wrapper textarea {
   width: 100%;
@@ -186,12 +169,11 @@ textarea {
   border: none;
   outline: none;
   color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: 16px !important; /* Prevents iOS zoom */
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   line-height: 1.7;
   resize: vertical;
   transition: min-height var(--transition-base);
-  /* CRITICAL: These are from auth.css and make it work */
   -webkit-appearance: none;
   -webkit-touch-callout: default !important;
   -webkit-user-select: text !important;
@@ -199,9 +181,7 @@ textarea {
   pointer-events: auto !important;
   touch-action: manipulation !important;
   position: relative;
-  z-index: 6 !important;
-  /* iOS zoom prevention */
-  font-size: 16px !important;
+  z-index: 20 !important;
 }
 
 .textarea-wrapper textarea::placeholder {
@@ -342,6 +322,9 @@ textarea {
   font-weight: 600;
 }
 
+/* ========================================
+   CLEAR BUTTON - CRITICAL FIX
+   ======================================== */
 .clear-btn {
   display: flex;
   align-items: center;
@@ -356,12 +339,13 @@ textarea {
   cursor: pointer;
   transition: all var(--transition-fast);
   font-family: "Inter", sans-serif;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  min-height: 36px;
-  min-width: 36px;
-  z-index: 3;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  min-height: 44px;
+  min-width: 44px;
+  z-index: 30 !important;
   pointer-events: auto !important;
+  position: relative;
 }
 
 .clear-btn:hover {
@@ -380,7 +364,7 @@ textarea {
 }
 
 /* ========================================
-   GENERATE BUTTON
+   GENERATE BUTTON - CRITICAL FIX
    ======================================== */
 .generate-btn {
   display: flex;
@@ -400,12 +384,13 @@ textarea {
   overflow: hidden;
   white-space: nowrap;
   box-shadow: 0 0 30px rgba(124, 58, 237, 0.2);
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
   min-height: 44px;
   min-width: 44px;
-  z-index: 3;
+  z-index: 30 !important;
   pointer-events: auto !important;
+  position: relative;
 }
 
 .generate-btn::before {
@@ -498,9 +483,13 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
+  position: relative;
+  z-index: 30 !important;
 }
 
-/* Chip */
+/* ========================================
+   CHIP - CRITICAL FIX
+   ======================================== */
 .chip {
   display: flex;
   align-items: center;
@@ -516,11 +505,13 @@ textarea {
   transition: all var(--transition-base);
   font-family: "Inter", sans-serif;
   white-space: nowrap;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  min-height: 40px;
-  z-index: 3;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  min-height: 44px;
+  min-width: 44px;
+  z-index: 30 !important;
   pointer-events: auto !important;
+  position: relative;
 }
 
 @media (hover: hover) {
@@ -582,7 +573,7 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  z-index: 10000;
+  z-index: 99999 !important;
   animation: slideUp 0.3s ease;
 }
 
@@ -632,8 +623,8 @@ textarea {
   transition: all var(--transition-fast);
   flex-shrink: 0;
   font-family: "Inter", sans-serif;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
   min-height: 36px;
   min-width: 36px;
   pointer-events: auto !important;
@@ -648,8 +639,29 @@ textarea {
   transform: scale(0.9);
 }
 
+/* Toast Types */
+.toast-success {
+  border-color: rgba(52, 211, 153, 0.3);
+  background: rgba(52, 211, 153, 0.05);
+}
+
+.toast-error {
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.05);
+}
+
+.toast-warning {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.05);
+}
+
+.toast-info {
+  border-color: rgba(34, 211, 238, 0.3);
+  background: rgba(34, 211, 238, 0.05);
+}
+
 /* ========================================
-   RESPONSIVE DESIGN - MOBILE FIRST
+   RESPONSIVE DESIGN
    ======================================== */
 
 /* Tablet */
@@ -699,7 +711,7 @@ textarea {
   .textarea-wrapper textarea {
     min-height: 100px;
     padding: var(--space-md);
-    font-size: 16px !important; /* Prevents iOS zoom */
+    font-size: 16px !important;
     line-height: 1.5;
   }
   
@@ -752,7 +764,7 @@ textarea {
   .textarea-wrapper textarea {
     min-height: 80px;
     padding: var(--space-md);
-    font-size: 16px !important; /* Prevents iOS zoom */
+    font-size: 16px !important;
   }
   
   .char-count {
@@ -875,5 +887,26 @@ textarea {
     border: 1px solid #ddd;
     color: black;
     background: white;
+  }
+}
+
+/* ========================================
+   DISABLE HOVER ON TOUCH DEVICES
+   ======================================== */
+@media (hover: none) {
+  .generate-btn:hover:not(:disabled) {
+    transform: none !important;
+  }
+  
+  .chip:hover:not(:disabled) {
+    transform: none !important;
+  }
+  
+  .clear-btn:hover {
+    transform: none !important;
+  }
+  
+  .toast-close:hover {
+    transform: none !important;
   }
 }
